@@ -7,8 +7,7 @@ import lombok.Data;
 
 public class BotUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long telegramId;
 
     private String role;
     private String username;

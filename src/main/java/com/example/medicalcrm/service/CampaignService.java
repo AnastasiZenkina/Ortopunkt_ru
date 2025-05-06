@@ -8,24 +8,24 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CampaignService {
+public class CampaignService  {
 
     @Autowired
     private CampaignRepository campaignRepository;
 
-    public List<Campaign> getAllCampains() {
+    public List<Campaign> getAllCampaigns() {
         return campaignRepository.findAll();
     }
 
-    public Optional<Campaign> getCampainById(Long id) {
+    public Optional<Campaign> getCampaignById(Long id) {
         return campaignRepository.findById(id);
     }
 
-    public Campaign saveCampain(Campaign campain) {
-        return campaignRepository.save(campain);
+    public Campaign saveCampaign(Campaign campaign) {
+        return campaignRepository.save(campaign);
     }
 
-    public void deleteCampain(Long id) {
+    public void deleteCampaign(Long id) {
         campaignRepository.deleteById(id);
     }
 }
