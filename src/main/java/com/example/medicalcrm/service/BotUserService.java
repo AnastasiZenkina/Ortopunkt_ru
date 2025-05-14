@@ -16,8 +16,8 @@ public class BotUserService {
         return botUserRepository.findAll();
     }
 
-    public Optional<BotUser> getBotUserById(Long id) {
-        return botUserRepository.findById(id);
+    public Optional<BotUser> getBotUserByTelegramId(Long telegramId) {
+        return botUserRepository.findById(telegramId);
     }
 
     public BotUser saveBotUser(BotUser botUser) {

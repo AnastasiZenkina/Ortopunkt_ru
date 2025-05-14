@@ -9,4 +9,5 @@ public class BotUserResponseDto {
 
     private String role;
     private String username;
+
 }

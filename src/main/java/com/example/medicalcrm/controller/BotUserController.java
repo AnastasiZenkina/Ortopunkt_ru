@@ -1,8 +1,6 @@
 package com.example.medicalcrm.controller;
 import com.example.medicalcrm.entity.BotUser;
-import com.example.medicalcrm.entity.Post;
 import com.example.medicalcrm.service.BotUserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,21 +22,24 @@ public class BotUserController {
         return botUserService.getAllBotUsers();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BotUser> getBotUserById(@PathVariable Long id){
-        return botUserService.getBotUserById(id)
+
+    @GetMapping("/{telegramId}")
+    public ResponseEntity<BotUser> getBotUserByTelegramId(@PathVariable Long telegramId) {
+        return botUserService.getBotUserByTelegramId(telegramId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @PostMapping
     public BotUser createBotUser(@RequestBody BotUser botUser){
         return botUserService.saveBotUser(botUser);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBotUser(@PathVariable Long id){
-        botUserService.deleteBotUser(id);
+    @DeleteMapping("/{telegramId}")
+    public ResponseEntity<Void> deleteBotUser(@PathVariable Long telegramId) {
+        botUserService.deleteBotUser(telegramId);
         return ResponseEntity.noContent().build();
     }
+
 }
