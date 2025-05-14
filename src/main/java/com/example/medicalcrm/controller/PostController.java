@@ -1,6 +1,8 @@
 package com.example.medicalcrm.controller;
+import com.example.medicalcrm.entity.Campaign;
 import com.example.medicalcrm.entity.Post;
 import com.example.medicalcrm.service.PostService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
