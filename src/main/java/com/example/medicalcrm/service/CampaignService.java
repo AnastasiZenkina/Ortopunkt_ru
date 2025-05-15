@@ -1,4 +1,5 @@
 package com.example.medicalcrm.service;
+import com.example.medicalcrm.dto.CampaignRequestDto;
 import com.example.medicalcrm.entity.Campaign;
 import com.example.medicalcrm.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +29,10 @@ public class CampaignService  {
     public void deleteCampaign(Long id) {
         campaignRepository.deleteById(id);
     }
+
+    public Campaign create(CampaignRequestDto dto) {
+        Campaign campaign = dto.toEntity();
+        return campaignRepository.save(campaign);
+    }
+
 }

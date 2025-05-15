@@ -1,8 +1,9 @@
 package com.example.medicalcrm.controller;
-import com.example.medicalcrm.entity.Application;
+import com.example.medicalcrm.dto.CampaignRequestDto;
+import com.example.medicalcrm.dto.CampaignResponseDto;
 import com.example.medicalcrm.entity.Campaign;
 import com.example.medicalcrm.service.CampaignService;
-import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +35,11 @@ public class CampaignController {
     }
 
     @PostMapping
-    public Campaign createCampaign(@RequestBody Campaign campaign){
-        return campaignService.saveCampaign(campaign);
+    public ResponseEntity<CampaignResponseDto> create(@RequestBody @Valid CampaignRequestDto dto) {
+        Campaign saved = campaignService.create(dto);
+        return ResponseEntity.ok(CampaignResponseDto.fromEntity(saved));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCampaign(@PathVariable Long id){

@@ -1,4 +1,5 @@
 package com.example.medicalcrm.dto;
+import com.example.medicalcrm.entity.Post;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -14,4 +15,16 @@ public class PostRequestDto {
     private Integer shares;
     private Double videoWatchRate;
     private boolean isWeak;
+
+    public Post toEntity() {
+        Post post = new Post();
+        post.setTitle(this.title);
+        post.setReach(this.reach);
+        post.setLikes(this.likes);
+        post.setComments(this.comments);
+        post.setShares(this.shares);
+        post.setVideoWatchRate(this.videoWatchRate);
+        post.setWeak(this.isWeak);
+        return post;
+    }
 }

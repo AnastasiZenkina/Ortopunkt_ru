@@ -1,4 +1,5 @@
 package com.example.medicalcrm.service;
+import com.example.medicalcrm.dto.PatientRequestDto;
 import com.example.medicalcrm.entity.Patient;
 import com.example.medicalcrm.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +29,10 @@ public class PatientService {
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
+
+    public Patient create(PatientRequestDto dto) {
+        Patient patient = dto.toEntity();
+        return patientRepository.save(patient);
+    }
+
 }

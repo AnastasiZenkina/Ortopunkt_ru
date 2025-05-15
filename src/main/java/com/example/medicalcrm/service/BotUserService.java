@@ -1,4 +1,5 @@
 package com.example.medicalcrm.service;
+import com.example.medicalcrm.dto.BotUserRequestDto;
 import com.example.medicalcrm.entity.BotUser;
 import com.example.medicalcrm.repository.BotUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class BotUserService {
 
     public void deleteBotUser(Long id) {
         botUserRepository.deleteById(id);
+    }
+
+    public BotUser create(BotUserRequestDto dto) {
+        BotUser botUser = dto.toEntity();
+        return botUserRepository.save(botUser);
     }
 
 }

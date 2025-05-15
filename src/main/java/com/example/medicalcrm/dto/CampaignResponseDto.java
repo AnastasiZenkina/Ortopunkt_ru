@@ -1,4 +1,5 @@
 package com.example.medicalcrm.dto;
+import com.example.medicalcrm.entity.Campaign;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -16,4 +17,20 @@ public class CampaignResponseDto {
     private Double totalSpent;
     private Double ctr;
     private Integer totalLeads;
+
+    public static CampaignResponseDto fromEntity(Campaign campaign) {
+        CampaignResponseDto dto = new CampaignResponseDto();
+        dto.setId(campaign.getId());
+        dto.setName(campaign.getName());
+        dto.setPlatform(campaign.getPlatform());
+        dto.setType(campaign.getType());
+        dto.setStartDate(campaign.getStartDate());
+        dto.setEndDate(campaign.getEndDate());
+        dto.setBudgetPerDay(campaign.getBudgetPerDay());
+        dto.setTotalSpent(campaign.getTotalSpent());
+        dto.setCtr(campaign.getCtr());
+        dto.setTotalLeads(campaign.getTotalLeads());
+
+        return dto;
+    }
 }

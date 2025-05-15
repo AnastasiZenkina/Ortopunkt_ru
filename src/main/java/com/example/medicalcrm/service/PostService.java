@@ -1,4 +1,5 @@
 package com.example.medicalcrm.service;
+import com.example.medicalcrm.dto.PostRequestDto;
 import com.example.medicalcrm.entity.Post;
 import com.example.medicalcrm.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,4 +28,10 @@ public class PostService {
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
+
+    public Post create(PostRequestDto dto) {
+        Post post = dto.toEntity();
+        return postRepository.save(post);
+    }
+
 }

@@ -22,4 +22,6 @@ public class Post {
     private Double videoWatchRate;
     private boolean isWeak;
 
+
+
 }

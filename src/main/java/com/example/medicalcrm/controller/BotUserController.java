@@ -1,6 +1,9 @@
 package com.example.medicalcrm.controller;
+import com.example.medicalcrm.dto.BotUserRequestDto;
+import com.example.medicalcrm.dto.BotUserResponseDto;
 import com.example.medicalcrm.entity.BotUser;
 import com.example.medicalcrm.service.BotUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +35,11 @@ public class BotUserController {
 
 
     @PostMapping
-    public BotUser createBotUser(@RequestBody BotUser botUser){
-        return botUserService.saveBotUser(botUser);
+    public ResponseEntity<BotUserResponseDto> create(@RequestBody @Valid BotUserRequestDto dto) {
+        BotUser saved = botUserService.create(dto);
+        return ResponseEntity.ok(BotUserResponseDto.fromEntity(saved));
     }
+
 
     @DeleteMapping("/{telegramId}")
     public ResponseEntity<Void> deleteBotUser(@PathVariable Long telegramId) {

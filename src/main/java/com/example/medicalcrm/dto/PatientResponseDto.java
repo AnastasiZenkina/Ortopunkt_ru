@@ -1,4 +1,5 @@
 package com.example.medicalcrm.dto;
+import com.example.medicalcrm.entity.Patient;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -15,4 +16,22 @@ public class PatientResponseDto {
     private String instaId;
     private String typeOfPayment;
     private LocalDate operationDate;
+
+    public static PatientResponseDto fromEntity(Patient patient) {
+        PatientResponseDto dto = new PatientResponseDto();
+        dto.setId(patient.getId());
+        dto.setName(patient.getName());
+        dto.setCity(patient.getCity());
+        dto.setCountry(patient.getCountry());
+        dto.setPhone(patient.getPhone());
+        dto.setEmail(patient.getEmail());
+        dto.setVkId(patient.getVkId());
+        dto.setTgId(patient.getTgId());
+        dto.setInstaId(patient.getInstaId());
+        dto.setTypeOfPayment(patient.getTypeOfPayment());
+        dto.setOperationDate(patient.getOperationDate());
+
+        return dto;
+    }
+
 }

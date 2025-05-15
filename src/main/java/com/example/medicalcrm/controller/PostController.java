@@ -1,10 +1,11 @@
 package com.example.medicalcrm.controller;
-import com.example.medicalcrm.entity.Campaign;
+import com.example.medicalcrm.dto.PostResponseDto;
 import com.example.medicalcrm.entity.Post;
 import com.example.medicalcrm.service.PostService;
-import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import com.example.medicalcrm.dto.PostRequestDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +34,11 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post){
-        return postService.savePost(post);
+    public ResponseEntity<PostResponseDto> create(@RequestBody @Valid PostRequestDto dto) {
+        Post saved = postService.create(dto);
+        return ResponseEntity.ok(PostResponseDto.fromEntity(saved));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id){

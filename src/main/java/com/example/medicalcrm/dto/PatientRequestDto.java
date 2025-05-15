@@ -1,4 +1,5 @@
 package com.example.medicalcrm.dto;
+import com.example.medicalcrm.entity.Patient;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -15,4 +16,21 @@ public class PatientRequestDto {
     private String instaId;
     private String typeOfPayment;
     private LocalDate operationDate;
+
+    public Patient toEntity() {
+        Patient patient = new Patient();
+        patient.setName(this.name);
+        patient.setCity(this.city);
+        patient.setCountry(this.country);
+        patient.setPhone(this.phone);
+        patient.setEmail(this.email);
+        patient.setVkId(this.vkId);
+        patient.setTgId(this.tgId);
+        patient.setInstaId(this.instaId);
+        patient.setTypeOfPayment(this.typeOfPayment);
+        patient.setOperationDate(this.operationDate);
+
+        return patient;
+    }
+
 }

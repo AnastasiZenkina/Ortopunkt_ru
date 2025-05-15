@@ -1,4 +1,5 @@
 package com.example.medicalcrm.dto;
+import com.example.medicalcrm.entity.Application;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -6,8 +7,8 @@ import java.time.LocalDate;
 
 public class ApplicationResponseDto {
     private Long id;
-    private Integer patientId;
-    private Integer campaignId;
+    private Long patientId;
+    private Long campaignId;
     private String text;
     private String status;
     private String source;
@@ -16,4 +17,27 @@ public class ApplicationResponseDto {
     private LocalDate createdAt;
     private String adType;
     private String creative;
+
+    public static ApplicationResponseDto fromEntity(Application application){
+        ApplicationResponseDto dto = new ApplicationResponseDto();
+        dto.setId(application.getId());
+        if (application.getPatient() != null) {
+            dto.setPatientId(application.getPatient().getId());
+        }
+
+        if (application.getCampaign() != null) {
+            dto.setCampaignId(application.getCampaign().getId());
+        }
+
+        dto.setText(application.getText());
+        dto.setStatus(application.getStatus());
+        dto.setSource(application.getSource());
+        dto.setChannel(application.getChannel());
+        dto.setTargetOrSpam(application.isTargetOrSpam());
+        dto.setCreatedAt(application.getCreatedAt());
+        dto.setAdType(application.getAdType());
+        dto.setCreative(application.getCreative());
+
+        return dto;
+    }
 }
