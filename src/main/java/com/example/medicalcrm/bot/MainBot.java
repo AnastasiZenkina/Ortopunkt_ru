@@ -31,6 +31,8 @@ public class MainBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Long chatId = update.getMessage().getChatId();
             String username = update.getMessage().getFrom().getUserName();
+            System.out.println("chatId: " + chatId + ", username: " + username);
+
 
             if (botUserService.getBotUserByTelegramId(chatId).isEmpty()) {
                 BotUser user = new BotUser();
@@ -57,6 +59,34 @@ public class MainBot extends TelegramLongPollingBot {
                     } else {
                         message.setText("Здравствуйте, доктор! Используйте /отчёт или /аналитика.");
                     }
+
+                } else if (role.equals("SMM")) {
+                    if (text.equalsIgnoreCase("/smm") || text.equalsIgnoreCase("/смм")) {
+                        message.setText("""
+                📊 SMM-отчёт за неделю
+
+                👥 VK:
+                👁️ Охват: 6 120
+                🤝 Вовлечённость: 4.2%
+                📌 Подписки: 84
+                🔁 Репостов: 28
+                💬 Комментарии: 19
+
+                📷 Instagram:
+                👁️ Охват: 3 420
+                🤝 Вовлечённость: 5.1%
+                📌 Подписки: 44
+                🔁 Репостов: 14
+                💬 Комментарии: 22
+
+                📉 Слабые посты:
+                VK: “Плоскостопие” — 230 охвата, 1 лайк
+                Insta: “Вальгус у детей” — 260 охвата, 1 заявка
+                """);
+                    } else {
+                        message.setText("Здравствуйте! Используйте команду /smm для получения отчёта.");
+                    }
+
                 } else {
                     if (text.equalsIgnoreCase("/start")) {
                         message.setText("Добро пожаловать, " + username + "! Чем могу помочь?");
