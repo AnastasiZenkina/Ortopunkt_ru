@@ -1,6 +1,5 @@
 package com.example.medicalcrm.bot.handler;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -8,12 +7,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
-@RequiredArgsConstructor
 public class CallbackHandler {
 
-    private final AbsSender sender;
 
-    public void handle(Update update) {
+    public void handle(Update update, AbsSender sender) {
         CallbackQuery callbackQuery = update.getCallbackQuery();
         String callbackData = callbackQuery.getData();
         Long chatId = callbackQuery.getMessage().getChatId();

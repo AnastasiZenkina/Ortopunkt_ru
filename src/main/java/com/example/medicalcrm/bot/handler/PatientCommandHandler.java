@@ -1,18 +1,15 @@
 package com.example.medicalcrm.bot.handler;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
-@RequiredArgsConstructor
 public class PatientCommandHandler {
 
-    private final AbsSender sender;
 
-    public void handle(Update update) {
+    public void handle(Update update, AbsSender sender) {
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
         SendMessage message = new SendMessage();

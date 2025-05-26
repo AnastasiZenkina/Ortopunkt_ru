@@ -2,6 +2,7 @@ package com.example.medicalcrm.bot;
 
 import com.example.medicalcrm.config.BotConfig;
 import com.example.medicalcrm.entity.BotUser;
+import com.example.medicalcrm.service.ApplicationService;
 import com.example.medicalcrm.service.BotUserService;
 import com.example.medicalcrm.bot.handler.DoctorCommandHandler;
 import com.example.medicalcrm.bot.handler.SmmCommandHandler;
@@ -22,6 +23,7 @@ public class MainBot extends TelegramLongPollingBot {
     private final SmmCommandHandler smmCommandHandler;
     private final PatientCommandHandler patientCommandHandler;
     private final CallbackHandler callbackHandler;
+    private final ApplicationService applicationService;
 
     @Override
     public String getBotUsername() {
@@ -36,7 +38,7 @@ public class MainBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasCallbackQuery()) {
-            callbackHandler.handle(update);
+            callbackHandler.handle(update, this);
             return;
         }
 
@@ -58,9 +60,9 @@ public class MainBot extends TelegramLongPollingBot {
                     .orElse("PATIENT");
 
             switch (role) {
-                case "DOCTOR" -> doctorCommandHandler.handle(update);
-                case "SMM" -> smmCommandHandler.handle(update);
-                default -> patientCommandHandler.handle(update);
+                case "DOCTOR" -> doctorCommandHandler.handle(update, this, applicationService);
+                case "SMM" -> smmCommandHandler.handle(update, this);
+                default -> patientCommandHandler.handle(update, this);
             }
         }
     }
