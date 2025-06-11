@@ -1,29 +1,38 @@
 package com.example.medicalcrm.bot;
 
+import com.example.medicalcrm.bot.button.ButtonCommand;
+import com.example.medicalcrm.bot.screen.DoctorScreen;
+import com.example.medicalcrm.bot.screen.PatientScreen;
+import com.example.medicalcrm.bot.screen.SmmScreen;
+import com.example.medicalcrm.bot.screen.TargetScreen;
 import com.example.medicalcrm.config.BotConfig;
 import com.example.medicalcrm.entity.BotUser;
 import com.example.medicalcrm.service.ApplicationService;
 import com.example.medicalcrm.service.BotUserService;
-import com.example.medicalcrm.bot.handler.DoctorCommandHandler;
-import com.example.medicalcrm.bot.handler.SmmCommandHandler;
-import com.example.medicalcrm.bot.handler.PatientCommandHandler;
-import com.example.medicalcrm.bot.handler.CallbackHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.Map;
 
 @Component("mainBot")
 @RequiredArgsConstructor
+@Getter
 public class MainBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final BotUserService botUserService;
-    private final DoctorCommandHandler doctorCommandHandler;
-    private final SmmCommandHandler smmCommandHandler;
-    private final PatientCommandHandler patientCommandHandler;
-    private final CallbackHandler callbackHandler;
+    private final DoctorScreen doctorCommandHandler;
+    private final SmmScreen smmCommandHandler;
+    private final TargetScreen targetCommandHandler;
+    private final PatientScreen patientCommandHandler;
     private final ApplicationService applicationService;
+    private final Map<String, ButtonCommand> commandMap;
+
+    private static MainBot instance;
 
     @Override
     public String getBotUsername() {
@@ -37,8 +46,10 @@ public class MainBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        instance = this;
+
         if (update.hasCallbackQuery()) {
-            callbackHandler.handle(update, this);
+            handleCallback(update.getCallbackQuery());
             return;
         }
 
@@ -46,7 +57,6 @@ public class MainBot extends TelegramLongPollingBot {
             Long chatId = update.getMessage().getChatId();
             String username = update.getMessage().getFrom().getUserName();
 
-            // Регистрируем пользователя, если он новый
             botUserService.getBotUserByTelegramId(chatId).orElseGet(() -> {
                 BotUser user = new BotUser();
                 user.setTelegramId(chatId);
@@ -60,10 +70,20 @@ public class MainBot extends TelegramLongPollingBot {
                     .orElse("PATIENT");
 
             switch (role) {
-                case "DOCTOR" -> doctorCommandHandler.handle(update, this, applicationService);
-                case "SMM" -> smmCommandHandler.handle(update, this);
+                case "DOCTOR" -> doctorCommandHandler.handle(update, this);
+                case "SMM" -> smmCommandHandler.handle(update, this, applicationService);
+                case "TARGET" -> targetCommandHandler.handle(update, this, applicationService);
                 default -> patientCommandHandler.handle(update, this);
             }
         }
+    }
+
+    private void handleCallback(CallbackQuery cb) {
+        String data = cb.getData();
+
+        commandMap.entrySet().stream()
+                .filter(entry -> data.startsWith(entry.getKey()))
+                .findFirst()
+                .ifPresent(entry -> entry.getValue().handle(cb, this));
     }
 }
