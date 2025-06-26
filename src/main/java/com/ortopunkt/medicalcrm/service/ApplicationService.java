@@ -49,4 +49,16 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
+    public void markAsAnswered(Long appId) {
+        Application app = applicationRepository.findById(appId).orElseThrow();
+        app.setAnsweredByHuman(true);
+        applicationRepository.save(app);
+    }
+
+    public Application getApplication(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Заявка не найдена"));
+    }
+
+
 }

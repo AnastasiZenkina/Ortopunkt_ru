@@ -59,9 +59,23 @@ public class ButtonFactory {
 
     // 🔹 2. Кнопки для карточки заявки
 
-    public static InlineKeyboardButton openChatButton(String username) {
+    public static InlineKeyboardButton aiAnalysusButton(String username) {
         return InlineKeyboardButton.builder()
                 .text("ИИ-анализ")
+                .url("https://t.me/" + username)
+                .build();
+    }
+
+    public static InlineKeyboardButton answerChatButton(Application app) {
+        return InlineKeyboardButton.builder()
+                .text("Ответить")
+                .callbackData("ANSWER_" + app.getId())
+                .build();
+    }
+
+    public static InlineKeyboardButton chatButton(String username) {
+        return InlineKeyboardButton.builder()
+                .text("Перейти в чат")
                 .url("https://t.me/" + username)
                 .build();
     }
@@ -73,7 +87,7 @@ public class ButtonFactory {
                 .build();
     }
 
-    public static InlineKeyboardButton quotaButton(Long appId, boolean marked) {
+    /* public static InlineKeyboardButton quotaButton(Long appId, boolean marked) {
         return InlineKeyboardButton.builder()
                 .text(marked ? "✅ По квоте" : "По квоте")
                 .callbackData("FREE_" + appId)
@@ -85,20 +99,22 @@ public class ButtonFactory {
                 .text(marked ? "✅ Платно" : "Платно")
                 .callbackData("PAID_" + appId)
                 .build();
-    }
+    }*/
 
     // 🔹 3. Обновление всей клавиатуры по статусу заявки
 
     public static InlineKeyboardMarkup updatedKeyboard(Application app) {
         return new InlineKeyboardMarkup(List.of(
                 List.of(
-                        openChatButton(app.getPatient().getUsername()),
-                        markButton(app.getId(), "Записан".equals(app.getStatus()))
+                        aiAnalysusButton(app.getPatient().getUsername())
                 ),
                 List.of(
+                        app.isAnsweredByHuman() ? chatButton(app.getPatient().getUsername()) : answerChatButton(app),
+                        markButton(app.getId(), "Записан".equals(app.getStatus())))
+                /*List.of(
                         quotaButton(app.getId(), "По квоте".equals(app.getPaymentStatus())),
                         paidButton(app.getId(), "Платно".equals(app.getPaymentStatus()))
-                )
+                )*/
         ));
     }
 }

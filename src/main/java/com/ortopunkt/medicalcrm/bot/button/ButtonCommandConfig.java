@@ -16,6 +16,7 @@ public class ButtonCommandConfig {
     private final FreeCommand freeCommand;
     private final AiCommand aiCommand;
     private final MenuCommand menuCommand;
+    private final AnswerCommand answerCommand;
 
     @Bean
     public Map<String, ButtonCommand> commandMap() {
@@ -30,6 +31,7 @@ public class ButtonCommandConfig {
         map.put("SMM_REPORT", menuCommand);
         map.put("TARGET_REPORT", menuCommand);
         map.put("AI_BUTTON", aiCommand);
+        map.put("ANSWER", answerCommand);
 
         return map;
     }

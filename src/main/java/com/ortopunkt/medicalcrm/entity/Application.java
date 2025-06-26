@@ -29,6 +29,7 @@ public class Application {
     private LocalDate createdAt;
     private String adType;
     private String creative;
+    private boolean answeredByHuman = false;
 
     @ElementCollection
     private List<String> photoFileIds;
