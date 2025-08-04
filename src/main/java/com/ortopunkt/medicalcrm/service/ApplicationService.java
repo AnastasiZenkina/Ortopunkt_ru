@@ -60,5 +60,9 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Заявка не найдена"));
     }
 
+    public boolean hasPhotos(Application app) {
+        List<String> photos = app.getPhotoFileIds();
+        return photos != null && !photos.isEmpty();
+    }
 
 }

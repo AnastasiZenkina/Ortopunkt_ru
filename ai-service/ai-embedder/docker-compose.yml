@@ -1,0 +1,8 @@
+
+version: "3.8"
+services:
+  sentence-embedder:
+    build: .
+    ports:
+      - "5005:5005"
+    restart: unless-stopped

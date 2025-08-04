@@ -26,12 +26,13 @@ public class Application {
     private String source;
     private String channel;
     private boolean targetOrSpam;
-    private LocalDate createdAt;
+    private LocalDate createdAt = LocalDate.now();
     private String adType;
     private String creative;
     private boolean answeredByHuman = false;
+    private boolean answeredByAi = false;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> photoFileIds;
 
 }

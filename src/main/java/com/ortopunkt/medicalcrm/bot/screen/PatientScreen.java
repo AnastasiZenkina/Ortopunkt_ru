@@ -42,7 +42,6 @@ public class PatientScreen {
                 Application app = patientService.processMessage(chatId, username, fullName, text);
                 applicationService.saveApplication(app);
                 channelSender.send(app, sender);
-                replyText = "Спасибо за сообщение! Мы с вами свяжемся 🧡";
             }
 
         } else if (msg.hasPhoto()) {

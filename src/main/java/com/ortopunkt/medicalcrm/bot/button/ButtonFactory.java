@@ -1,5 +1,6 @@
 package com.ortopunkt.medicalcrm.bot.button;
 
+import com.ortopunkt.medicalcrm.bot.ai.AiCommand;
 import com.ortopunkt.medicalcrm.entity.Application;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -59,10 +60,10 @@ public class ButtonFactory {
 
     // 🔹 2. Кнопки для карточки заявки
 
-    public static InlineKeyboardButton aiAnalysusButton(String username) {
+    public static InlineKeyboardButton aiAnalysusButton(Long appId) {
         return InlineKeyboardButton.builder()
                 .text("ИИ-анализ")
-                .url("https://t.me/" + username)
+                .callbackData("AI_ANALYZE_" + appId)
                 .build();
     }
 
@@ -106,15 +107,19 @@ public class ButtonFactory {
     public static InlineKeyboardMarkup updatedKeyboard(Application app) {
         return new InlineKeyboardMarkup(List.of(
                 List.of(
-                        aiAnalysusButton(app.getPatient().getUsername())
+                        aiAnalysusButton(app.getId())
                 ),
                 List.of(
-                        app.isAnsweredByHuman() ? chatButton(app.getPatient().getUsername()) : answerChatButton(app),
-                        markButton(app.getId(), "Записан".equals(app.getStatus())))
-                /*List.of(
-                        quotaButton(app.getId(), "По квоте".equals(app.getPaymentStatus())),
-                        paidButton(app.getId(), "Платно".equals(app.getPaymentStatus()))
-                )*/
+                        app.isAnsweredByHuman()
+                                ? chatButton(app.getPatient().getUsername())
+                                : answerChatButton(app),
+                        markButton(app.getId(), "Записан".equals(app.getStatus()))
+                )
+            /*List.of(
+                    quotaButton(app.getId(), "По квоте".equals(app.getPaymentStatus())),
+                    paidButton(app.getId(), "Платно".equals(app.getPaymentStatus()))
+            )*/
         ));
     }
+
 }

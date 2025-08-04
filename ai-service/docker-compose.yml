@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  embedder:
+    build: ./ai-embedder
+    container_name: ai-embedder
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  nli:
+    build: ./ai-nli
+    container_name: ai-nli
+    ports:
+      - "8002:8002"
+    restart: unless-stopped

@@ -1,4 +1,4 @@
-package com.ortopunkt.medicalcrm.dto;
+package com.ortopunkt.dto;
 import com.ortopunkt.medicalcrm.entity.BotUser;
 import lombok.Data;
 
