@@ -61,7 +61,7 @@ public class AiCommand implements ButtonCommand {
             return;
         }
 
-        // 🔹 2. Включение / выключение автоответа (первый ИИ)
+        // 🔹  Включение / выключение автоответа (первый ИИ)
         toggle();
 
         String role = botUserService.getBotUserByTelegramId(chatId)
