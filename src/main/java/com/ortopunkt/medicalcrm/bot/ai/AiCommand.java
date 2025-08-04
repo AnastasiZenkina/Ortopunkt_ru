@@ -41,7 +41,7 @@ public class AiCommand implements ButtonCommand {
         Long chatId = callbackQuery.getMessage().getChatId();
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
-        // 1Обработка кнопки "ИИ-анализ" (второй ИИ)
+        // Обработка кнопки "ИИ-анализ" (второй ИИ)
         if (data.startsWith("AI_ANALYZE_")) {
             Long appId = Long.parseLong(data.replace("AI_ANALYZE_", ""));
             Application app = applicationService.getApplicationById(appId)
