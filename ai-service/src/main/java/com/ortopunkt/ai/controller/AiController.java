@@ -1,9 +1,9 @@
 package com.ortopunkt.ai.controller;
 
 import com.ortopunkt.ai.analysis.AiAnalyzer;
-import com.ortopunkt.ai.analysis.AnalysisResult;
-import com.ortopunkt.ai.dto.AiRequest;
-import com.ortopunkt.ai.dto.AiResponse;
+import com.ortopunkt.dto.AnalysisResult;
+import com.ortopunkt.dto.AiRequest;
+import com.ortopunkt.dto.AiResponse;
 import com.ortopunkt.ai.topic.AiTopicClassifier;
 import com.ortopunkt.ai.service.AiService;
 import lombok.RequiredArgsConstructor;

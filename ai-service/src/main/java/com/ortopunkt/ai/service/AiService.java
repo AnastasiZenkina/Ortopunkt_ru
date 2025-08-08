@@ -2,7 +2,7 @@ package com.ortopunkt.ai.service;
 
 import com.ortopunkt.ai.topic.AiTopicClassifier;
 import com.ortopunkt.ai.topic.ReplyTemplates;
-import com.ortopunkt.ai.dto.AiResponse;
+import com.ortopunkt.dto.AiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

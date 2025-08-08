@@ -3,6 +3,7 @@ package com.ortopunkt.ai.analysis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import com.ortopunkt.dto.AnalysisResult;
 import org.springframework.http.*;
 import java.util.*;
 
