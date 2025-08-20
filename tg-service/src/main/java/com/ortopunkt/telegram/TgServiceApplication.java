@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.ortopunkt.telegram",
         "com.ortopunkt.crm"
 })
+
 @EnableScheduling
 public class TgServiceApplication {
 
