@@ -1,0 +1,3 @@
+com\ortopunkt\logging\GlobalExceptionHandler.class
+com\ortopunkt\logging\LoggingUtils.class
+com\ortopunkt\logging\ServiceLogger.class

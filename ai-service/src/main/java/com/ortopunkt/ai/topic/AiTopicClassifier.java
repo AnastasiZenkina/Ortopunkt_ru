@@ -1,5 +1,6 @@
 package com.ortopunkt.ai.topic;
 
+import com.ortopunkt.logging.GlobalExceptionHandler;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -77,7 +78,6 @@ public class AiTopicClassifier {
             return bestTopic;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return "common";
         }
     }

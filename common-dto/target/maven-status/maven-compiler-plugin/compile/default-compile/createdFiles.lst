@@ -1,0 +1,13 @@
+com\ortopunkt\dto\request\PatientRequestDto.class
+com\ortopunkt\dto\response\BotUserResponseDto.class
+com\ortopunkt\dto\response\AiResponse.class
+com\ortopunkt\dto\response\ApplicationResponseDto.class
+com\ortopunkt\dto\response\PatientResponseDto.class
+com\ortopunkt\dto\request\CampaignRequestDto.class
+com\ortopunkt\dto\response\AnalysisResult.class
+com\ortopunkt\dto\response\CampaignResponseDto.class
+com\ortopunkt\dto\request\PostRequestDto.class
+com\ortopunkt\dto\request\ApplicationRequestDto.class
+com\ortopunkt\dto\request\AiRequest.class
+com\ortopunkt\dto\response\PostResponseDto.class
+com\ortopunkt\dto\request\BotUserRequestDto.class

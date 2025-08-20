@@ -3,7 +3,7 @@ package com.ortopunkt.ai.analysis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import com.ortopunkt.dto.AnalysisResult;
+import com.ortopunkt.dto.response.AnalysisResult;
 import org.springframework.http.*;
 import java.util.*;
 
@@ -64,7 +64,7 @@ public class AiAnalyzer {
             return interpret(text, results);
 
         } catch (Exception e) {
-            log.error("Error during AI analysis", e);
+            log.error("Ошибка AI анализа", e);
             return fallback();
         }
     }

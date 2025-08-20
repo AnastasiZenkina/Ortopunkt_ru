@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/ai-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ai-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/analysts-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/analytics-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/analytics-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-dto/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-dto/src/main/java/com/ortopunkt/dto/response/AnalysisResult.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-dto/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-logging/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common-logging/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crm-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crm-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crm/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/medicalcrm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tg-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tg-service/src/main/resources" charset="UTF-8" />
   </component>
 </project>
