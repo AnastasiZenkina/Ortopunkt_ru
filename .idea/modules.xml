@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/analysts-service/analysts-service.iml" filepath="$PROJECT_DIR$/analysts-service/analysts-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common-logging.iml" filepath="$PROJECT_DIR$/common-logging.iml" />
     </modules>
   </component>
 </project>

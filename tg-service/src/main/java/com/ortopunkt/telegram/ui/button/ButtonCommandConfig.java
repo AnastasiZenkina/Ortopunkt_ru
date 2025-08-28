@@ -1,9 +1,6 @@
 package com.ortopunkt.telegram.ui.button;
 
-import com.ortopunkt.telegram.ui.button.handler.AiCommand;
-import com.ortopunkt.telegram.ui.button.handler.AnswerCommand;
-import com.ortopunkt.telegram.ui.button.handler.MarkCommand;
-import com.ortopunkt.telegram.ui.button.handler.MenuCommand;
+import com.ortopunkt.telegram.ui.button.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +16,9 @@ public class ButtonCommandConfig {
     private final AiCommand aiCommand;
     private final MenuCommand menuCommand;
     private final AnswerCommand answerCommand;
+    private final OperatedPaidCommand operatedPaidCommand;
+    private final OperatedQuotaCommand operatedQuotaCommand;
+    private final StatusCommand statusCommand;
 
     @Bean("buttonCommandMap")
     public Map<String, ButtonCommand> buttonCommandMap() {
@@ -26,6 +26,9 @@ public class ButtonCommandConfig {
         // карточка заявки
         map.put("MARK_",           markCommand);
         map.put("ANSWER_",         answerCommand);
+        map.put("OPERATED_PAID_",   operatedPaidCommand);
+        map.put("OPERATED_QUOTA_",  operatedQuotaCommand);
+        map.put("STATUS_", statusCommand);
 
         // AI
         map.put("AI_ANALYZE_",     aiCommand);

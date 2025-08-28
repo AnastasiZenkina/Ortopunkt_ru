@@ -52,5 +52,14 @@ public class ApplicationController {
     public Long countApplications(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate) {
         return applicationService.countApplications(fromDate);
     }
+
+    @PatchMapping("/{id}/payment-status")
+    public ResponseEntity<Void> updatePaymentStatus(
+            @PathVariable Long id,
+            @RequestParam String paymentStatus
+    ) {
+        applicationService.updatePaymentStatus(id, paymentStatus);
+        return ResponseEntity.ok().build();
+    }
 }
 

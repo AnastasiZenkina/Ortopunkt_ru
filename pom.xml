@@ -10,12 +10,12 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>common-dto</module>
+        <module>common-logging</module>
+        <module>crm-service</module>
         <module>tg-service</module>
         <module>ai-service</module>
         <module>analytics-service</module>
-        <module>common-dto</module>
-        <module>crm-service</module>
-        <module>common-logging</module>
     </modules>
 
     <properties>

@@ -39,12 +39,23 @@ public class AnalyticsService {
         int booked = getTotalBooked(recent);
         double bookedPercent = total == 0 ? 0 : (booked * 100.0 / total);
 
+        // --- Прооперированы ---
+        int operatedPaid = getTotalOperatedPaid(recent);
+        int operatedQuota = getTotalOperatedQuota(recent);
+
+        double operatedPaidPercent = booked == 0 ? 0 : (operatedPaid * 100.0 / booked);
+        double operatedQuotaPercent = booked == 0 ? 0 : (operatedQuota * 100.0 / booked);
+
         // сборка отчёта
         StringBuilder sb = new StringBuilder();
         sb.append("📝 <b>Заявки за месяц</b>:\n\n")
                 .append("Всего написало: <b>").append(total).append("</b> человек\n")
                 .append("Записались на консультацию: <b>").append(booked).append("</b>\n")
-                .append("Конверсия в запись: ").append(String.format("%.1f", bookedPercent)).append("%\n\n");
+                .append("Конверсия в запись: ").append(String.format("%.1f", bookedPercent)).append("%\n\n")
+                .append("Прооперированы платно: <b>").append(operatedPaid).append("</b> (")
+                .append(String.format("%.1f", operatedPaidPercent)).append("% от записавшихся)\n")
+                .append("Прооперированы по квоте: <b>").append(operatedQuota).append("</b> (")
+                .append(String.format("%.1f", operatedQuotaPercent)).append("% от записавшихся)\n\n");
 
         // список имён уникальных пользователей
         Set<String> seen = new HashSet<>();
@@ -66,6 +77,30 @@ public class AnalyticsService {
     private int getTotalBooked(List<ApplicationResponseDto> recent) {
         return recent.stream()
                 .filter(app -> "Записан".equalsIgnoreCase(app.getStatus()))
+                .map(app -> {
+                    PatientResponseDto patient = app.getPatient();
+                    return patient != null ? patient.getTgId() : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet())
+                .size();
+    }
+
+    private int getTotalOperatedPaid(List<ApplicationResponseDto> recent) {
+        return recent.stream()
+                .filter(app -> "Прооперирован платно".equalsIgnoreCase(app.getStatus()))
+                .map(app -> {
+                    PatientResponseDto patient = app.getPatient();
+                    return patient != null ? patient.getTgId() : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet())
+                .size();
+    }
+
+    private int getTotalOperatedQuota(List<ApplicationResponseDto> recent) {
+        return recent.stream()
+                .filter(app -> "Прооперирован по квоте".equalsIgnoreCase(app.getStatus()))
                 .map(app -> {
                     PatientResponseDto patient = app.getPatient();
                     return patient != null ? patient.getTgId() : null;

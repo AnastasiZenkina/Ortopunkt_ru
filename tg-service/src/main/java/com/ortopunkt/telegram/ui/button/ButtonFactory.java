@@ -88,20 +88,53 @@ public class ButtonFactory {
                 .build();
     }
 
+    public static InlineKeyboardButton statusButton(Long appId) {
+        return InlineKeyboardButton.builder()
+                .text("Статус")
+                .callbackData("STATUS_" + appId)
+                .build();
+    }
+
+    public static InlineKeyboardButton operatedPaidButton(Long appId) {
+        return InlineKeyboardButton.builder()
+                .text("Платно")
+                .callbackData("STATUS_PAID_" + appId)
+                .build();
+    }
+
+    public static InlineKeyboardButton operatedQuotaButton(Long appId) {
+        return InlineKeyboardButton.builder()
+                .text("По квоте")
+                .callbackData("STATUS_QUOTA_" + appId)
+                .build();
+    }
+
     // ── 3) Сборка клавиатуры карточки ────────────────────────────────
-    // РЯДЫ И РАСПОЛОЖЕНИЕ КНОПОК СОХРАНЕНЫ как у тебя: 1-й ряд — ИИ, 2-й ряд — чат/ответ + записать
+
     public static InlineKeyboardMarkup updatedKeyboard(Application app) {
         String username = (app.getPatient() != null) ? app.getPatient().getUsername() : null;
 
         return new InlineKeyboardMarkup(List.of(
                 List.of(
-                        aiAnalysisButton(app.getId())
+                        aiAnalysisButton(app.getId()),
+                        markButton(app.getId(), "Записан".equals(app.getStatus()))
                 ),
                 List.of(
                         (app.isAnsweredByHuman() && username != null)
                                 ? chatButton(username)
                                 : answerChatButton(app),
-                        markButton(app.getId(), "Записан".equals(app.getStatus()))
+                        statusButton(app.getId())
+                )
+        ));
+    }
+
+    // ── 4) Подменю статуса ───────────────────────────────────────────
+
+    public static InlineKeyboardMarkup statusSubmenu(Long appId, String currentStatus) {
+        return new InlineKeyboardMarkup(List.of(
+                List.of(
+                        operatedPaidButton(appId),
+                        operatedQuotaButton(appId)
                 )
         ));
     }

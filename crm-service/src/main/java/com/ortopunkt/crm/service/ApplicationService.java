@@ -85,6 +85,13 @@ public class ApplicationService {
         return photos != null && !photos.isEmpty();
     }
 
+    public void updatePaymentStatus(Long appId, String paymentStatus) {
+        Application app = applicationRepository.findById(appId)
+                .orElseThrow(() -> new RuntimeException("Заявка не найдена"));
+        app.setPaymentStatus(paymentStatus);
+        applicationRepository.save(app);
+    }
+
     private ApplicationResponseDto toResponseDto(Application application) {
         ApplicationResponseDto dto = new ApplicationResponseDto();
         dto.setId(application.getId());
