@@ -1,5 +1,6 @@
 package com.ortopunkt.analyticsservice.service;
 
+import com.ortopunkt.analyticsservice.client.AnalyticsHttpClient;
 import com.ortopunkt.dto.response.ApplicationResponseDto;
 import com.ortopunkt.dto.response.PatientResponseDto;
 import lombok.RequiredArgsConstructor;

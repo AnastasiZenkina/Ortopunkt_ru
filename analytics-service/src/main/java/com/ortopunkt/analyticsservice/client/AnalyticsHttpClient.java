@@ -1,4 +1,4 @@
-package com.ortopunkt.analyticsservice.service;
+package com.ortopunkt.analyticsservice.client;
 
 import com.ortopunkt.dto.response.ApplicationResponseDto;
 import lombok.RequiredArgsConstructor;
