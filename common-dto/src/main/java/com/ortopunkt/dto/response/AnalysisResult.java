@@ -18,7 +18,7 @@ public class AnalysisResult {
 
     public String toTelegramMessage(){
         return String.format(
-                "🤖 ИИ-анализ:\n" +
+                "ИИ-анализ:\n" +
                         "• Интерес: %s\n" +
                         "• Платёжеспособность: %s\n" +
                         "• Эмоции: %s\n" +
