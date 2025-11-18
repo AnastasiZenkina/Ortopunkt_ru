@@ -1,5 +1,6 @@
 package com.ortopunkt.ai.service;
 
+import com.ortopunkt.ai.topic.Topic;
 import com.ortopunkt.ai.topic.AiTopicClassifier;
 import com.ortopunkt.ai.topic.ReplyTemplates;
 import com.ortopunkt.dto.response.AiResponse;
@@ -14,30 +15,30 @@ public class AiService {
     private final ReplyTemplates templates;
 
     public AiResponse getResponse(String text, boolean hasPhoto) {
-        String topic = classifier.classify(text);
+        Topic topic = classifier.classify(text);
         String reply;
 
         switch (topic) {
-            case "flatfoot": reply = templates.flatfoot(hasPhoto); break;
-            case "hallux valgus": reply = templates.halluxValgus(hasPhoto); break;
-            case "first joint prosthesis": reply = templates.firstJointProsthesis(hasPhoto); break;
-            case "ganglion": reply = templates.ganglion(hasPhoto); break;
-            case "dupuytren": reply = templates.dupuytren(hasPhoto); break;
-            case "endoprosthesis": reply = templates.endoprosthesis(hasPhoto); break;
-            case "repeat": reply = templates.repeat(hasPhoto); break;
-            case "symptom": reply = templates.symptom(hasPhoto); break;
-            case "morton": reply = templates.morton(hasPhoto); break;
-            case "haglund": reply = templates.haglund(hasPhoto); break;
-            case "rheumatoid": reply = templates.rheumatoid(hasPhoto); break;
-            case "heel spur": reply = templates.heelSpur(hasPhoto); break;
-            case "quota": reply = templates.quota(); break;
-            case "paid": reply = templates.paid(); break;
-            case "region": reply = templates.region(); break;
-            case "online": reply = templates.online(); break;
-            case "rehab": reply = templates.rehab(); break;
-            case "age": reply = templates.age(); break;
-            case "partner": reply = templates.partner(); break;
-            default: reply = templates.common(); break;
+            case FLATFOOT -> reply = templates.flatfoot(hasPhoto);
+            case HALLUX_VALGUS -> reply = templates.halluxValgus(hasPhoto);
+            case FIRST_JOINT_PROSTHESIS -> reply = templates.firstJointProsthesis(hasPhoto);
+            case GANGLION -> reply = templates.ganglion(hasPhoto);
+            case DUPUYTREN -> reply = templates.dupuytren(hasPhoto);
+            case ENDOPROSTHESIS -> reply = templates.endoprosthesis(hasPhoto);
+            case REPEAT -> reply = templates.repeat(hasPhoto);
+            case SYMPTOM -> reply = templates.symptom(hasPhoto);
+            case MORTON -> reply = templates.morton(hasPhoto);
+            case HAGLUND -> reply = templates.haglund(hasPhoto);
+            case RHEUMATOID -> reply = templates.rheumatoid(hasPhoto);
+            case HEEL_SPUR -> reply = templates.heelSpur(hasPhoto);
+            case QUOTA -> reply = templates.quota();
+            case PAID -> reply = templates.paid();
+            case REGION -> reply = templates.region();
+            case ONLINE -> reply = templates.online();
+            case REHAB -> reply = templates.rehab();
+            case AGE -> reply = templates.age();
+            case PARTNER -> reply = templates.partner();
+            default -> reply = templates.common();
         }
 
         return new AiResponse(reply);

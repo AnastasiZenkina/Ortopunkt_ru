@@ -1,6 +1,7 @@
 package com.ortopunkt.ai.controller;
 
 import com.ortopunkt.ai.analysis.AiAnalyzer;
+import com.ortopunkt.ai.topic.Topic;
 import com.ortopunkt.dto.response.AnalysisResult;
 import com.ortopunkt.dto.request.AiRequest;
 import com.ortopunkt.dto.response.AiResponse;
@@ -24,8 +25,8 @@ public class AiController {
     }
 
     @PostMapping("/classify")
-    public String classify(@RequestBody String text) {
-        return classifier.classify(text);
+    public Topic classify(@RequestBody String text) {
+        return classifier.classify(text); // теперь возвращает Topic
     }
 
     @PostMapping("/analyze")
