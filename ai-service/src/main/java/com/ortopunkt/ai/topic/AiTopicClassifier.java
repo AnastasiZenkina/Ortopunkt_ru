@@ -1,96 +1,101 @@
 package com.ortopunkt.ai.topic;
 
-import com.ortopunkt.logging.GlobalExceptionHandler;
+import com.ortopunkt.ai.config.AiDictionaries;
+import com.ortopunkt.logging.ServiceLogger;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
+@RequiredArgsConstructor
 public class AiTopicClassifier {
 
-    private static final String MODEL_URL = "http://localhost:5005/embed";
+    @Value("${ai.model.url}")
+    private String modelUrl;
 
-    private static final Map<String, String> topicDescriptions = Map.ofEntries(
-            Map.entry("flatfoot", "плоскостопие, уплощение стопы, стельки, походка"),
-            Map.entry("hallux valgus", "шишка, косточка на ноге, большой палец, вальгус"),
-            Map.entry("first joint prosthesis", "артродез, эндопротез первого плюснефалангового сустава"),
-            Map.entry("ganglion", "гигрома, шишка на кисти, жидкость, рука"),
-            Map.entry("dupuytren", "болезнь Дюпюитрена, пальцы, контрактура"),
-            Map.entry("endoprosthesis", "тазобедренный сустав, коленный сустав, протез, операция"),
-            Map.entry("repeat", "повторная операция, не помогло, было уже вмешательство"),
-            Map.entry("symptom", "боль, жжение, отёк, покраснение, симптом, ощущение"),
-            Map.entry("morton", "неврома Мортона, стопа, боль между пальцами"),
-            Map.entry("haglund", "деформация Хаглунда, ахилл, бугор, пятка"),
-            Map.entry("rheumatoid", "ревматоидный артрит, деформация стоп, воспаление"),
-            Map.entry("heel spur", "пяточная шпора, фасциит, боль в пятке, шип"),
-            Map.entry("quota", "квота, бесплатно, операция по полису"),
-            Map.entry("paid", "платно, стоимость, цена операции"),
-            Map.entry("region", "город, выезд, где вы находитесь"),
-            Map.entry("online", "онлайн-консультация, удалённо, по переписке"),
-            Map.entry("rehab", "реабилитация, восстановление, стельки, ортопедия"),
-            Map.entry("age", "возраст, старше 60, пожилой, можно ли мне"),
-            Map.entry("partner", "реклама, сотрудничество, партнёрство")
-    );
+    private static final double MIN_SIM = 0.30;
 
-    public String classify(String inputText) {
+    private final RestTemplate restTemplate;
+    private final ServiceLogger log = new ServiceLogger(getClass(), "AI");
+
+    public Topic classify(String inputText) {
+        String text = inputText == null ? "" : inputText.toLowerCase();
+
+        Topic kwHit = keywordFallback(text);
+        if (kwHit != Topic.COMMON) return kwHit;
+
+        List<Topic> topics = new ArrayList<>(AiDictionaries.TOPIC_DESCRIPTIONS.keySet());
         List<String> textsToEmbed = new ArrayList<>();
-        textsToEmbed.add(inputText);
-        textsToEmbed.addAll(topicDescriptions.values());
-
-        Map<String, List<String>> requestBody = new HashMap<>();
-        requestBody.put("texts", textsToEmbed);
+        textsToEmbed.add(text);
+        textsToEmbed.addAll(AiDictionaries.TOPIC_DESCRIPTIONS.values());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, List<String>>> entity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<Map<String, List<String>>> entity = new HttpEntity<>(Map.of("texts", textsToEmbed), headers);
 
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<List> response = restTemplate.exchange(
-                    MODEL_URL,
-                    HttpMethod.POST,
-                    entity,
-                    List.class
+            ResponseEntity<List<List<Double>>> resp = restTemplate.exchange(
+                    modelUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {}
             );
+            if (!resp.getStatusCode().is2xxSuccessful() || resp.getBody() == null) return kwHit;
 
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                return "common";
-            }
+            List<List<Double>> embs = resp.getBody();
+            List<Double> in = embs.get(0);
 
-            List<List<Double>> embeddings = (List<List<Double>>) response.getBody();
-            List<Double> inputEmbedding = embeddings.get(0);
-
-            double bestSim = -1.0;
-            String bestTopic = "common";
-
-            int i = 1;
-            for (String topic : topicDescriptions.keySet()) {
-                List<Double> topicEmbedding = embeddings.get(i++);
-                double sim = cosineSimilarity(inputEmbedding, topicEmbedding);
-                if (sim > bestSim) {
-                    bestSim = sim;
-                    bestTopic = topic;
+            Topic best = Topic.COMMON;
+            double bestScore = -1;
+            for (int i = 0; i < topics.size(); i++) {
+                double s = cosineSimilarity(in, embs.get(i + 1));
+                if (s > bestScore) {
+                    bestScore = s;
+                    best = topics.get(i);
                 }
             }
+            if (bestScore >= MIN_SIM) return best;
 
-            return bestTopic;
-
+            return keywordFallback(text);
         } catch (Exception e) {
-            return "common";
+            log.error("Error during topic classification: " + e.getMessage());
+            return keywordFallback(text);
         }
     }
 
-    private double cosineSimilarity(List<Double> v1, List<Double> v2) {
-        double dot = 0.0, norm1 = 0.0, norm2 = 0.0;
-        for (int i = 0; i < v1.size(); i++) {
-            double a = v1.get(i);
-            double b = v2.get(i);
-            dot += a * b;
-            norm1 += a * a;
-            norm2 += b * b;
+    private Topic keywordFallback(String textLower) {
+        Map<Topic, List<String>> kw = buildKeywords();
+        for (Topic t : AiDictionaries.TOPIC_DESCRIPTIONS.keySet()) {
+            for (String k : kw.getOrDefault(t, List.of())) {
+                if (!k.isEmpty() && textLower.contains(k)) return t;
+            }
         }
-        return dot / (Math.sqrt(norm1) * Math.sqrt(norm2) + 1e-10);
+        return Topic.COMMON;
+    }
+
+    private Map<Topic, List<String>> buildKeywords() {
+        Map<Topic, String> dict = AiDictionaries.TOPIC_DESCRIPTIONS;
+        Map<Topic, List<String>> out = new LinkedHashMap<>();
+        for (Map.Entry<Topic, String> e : dict.entrySet()) {
+            List<String> list = Stream.of(e.getValue().toLowerCase().split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+            out.put(e.getKey(), list);
+        }
+        return out;
+    }
+
+    private double cosineSimilarity(List<Double> v1, List<Double> v2) {
+        double dot = 0.0, n1 = 0.0, n2 = 0.0;
+        for (int i = 0; i < v1.size(); i++) {
+            double a = v1.get(i), b = v2.get(i);
+            dot += a * b; n1 += a * a; n2 += b * b;
+        }
+        return dot / (Math.sqrt(n1) * Math.sqrt(n2) + 1e-10);
     }
 }
