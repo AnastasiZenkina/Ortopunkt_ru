@@ -1,8 +1,8 @@
-package com.ortopunkt.telegram.ui.button.handler;
+package com.ortopunkt.telegram.ui.button.handler.auto;
 
-import com.ortopunkt.crm.entity.Application;
-import com.ortopunkt.crm.service.ApplicationService;
-import com.ortopunkt.logging.GlobalExceptionHandler;
+import com.ortopunkt.dto.response.ApplicationResponseDto;
+import com.ortopunkt.logging.ServiceLogger;
+import com.ortopunkt.telegram.client.CrmClient;
 import com.ortopunkt.telegram.ui.button.ButtonCommand;
 import com.ortopunkt.telegram.ui.button.ButtonFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,15 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class StatusCommand implements ButtonCommand {
 
-    private final ApplicationService applicationService;
+    private final CrmClient crmClient;
+    private final OperatedCommand operatedCommand;
+    private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
 
     @Override
     public void handle(CallbackQuery cb, AbsSender sender) {
@@ -25,31 +29,27 @@ public class StatusCommand implements ButtonCommand {
         if (appId == null) return;
 
         try {
-            Application app = applicationService.getApplication(appId);
-
-            InlineKeyboardMarkup markup;
-
-            if (data.startsWith("STATUS_PAID_")) {
-                app.setStatus("Прооперирован платно");
-                applicationService.saveApplication(app);
-                markup = ButtonFactory.updatedKeyboard(app); // вернёмся к обычной клавиатуре
-            } else if (data.startsWith("STATUS_QUOTA_")) {
-                app.setStatus("Прооперирован по квоте");
-                applicationService.saveApplication(app);
-                markup = ButtonFactory.updatedKeyboard(app);
-            } else {
-                // если просто нажали "Статус" → показываем подменю
-                markup = ButtonFactory.statusSubmenu(appId, app.getStatus());
+            if (data.startsWith("OPERATED_PAID_") || data.startsWith("OPERATED_QUOTA_")) {
+                operatedCommand.handle(cb, sender);
+                return;
             }
+
+            ApplicationResponseDto app = crmClient.getApplication(appId);
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
+                    List.of(
+                            List.of(ButtonFactory.operatedPaidButton(appId)),
+                            List.of(ButtonFactory.operatedQuotaButton(appId))
+                    )
+            );
 
             EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
             edit.setChatId(cb.getMessage().getChatId().toString());
             edit.setMessageId(cb.getMessage().getMessageId());
             edit.setReplyMarkup(markup);
-
             sender.execute(edit);
+
         } catch (Exception e) {
-            GlobalExceptionHandler.logError(e);
+            log.error("Ошибка при обработке статуса: " + e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class StatusCommand implements ButtonCommand {
             String id = data.replaceAll("[^0-9]", "");
             return id.isEmpty() ? null : Long.parseLong(id);
         } catch (Exception e) {
-            GlobalExceptionHandler.logError(e);
+            log.error("Ошибка при разборе ID: " + e.getMessage());
             return null;
         }
     }
