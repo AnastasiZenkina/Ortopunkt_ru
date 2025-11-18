@@ -1,48 +1,62 @@
 package com.ortopunkt.telegram.ui.screen;
 
-import com.ortopunkt.crm.service.ApplicationService;
-import com.ortopunkt.logging.GlobalExceptionHandler;
+import com.ortopunkt.logging.ServiceLogger;
+import com.ortopunkt.telegram.client.CrmClient;
+import com.ortopunkt.telegram.ui.button.MenuFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import com.ortopunkt.telegram.ui.button.ButtonFactory;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Component
 public class SmmScreen {
 
-    public void handle(Update update, AbsSender sender, ApplicationService applicationService) {
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
+    private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
+
+    public void handle(Update update, AbsSender sender, CrmClient crmClient) {
+        Long chatId = null;
+        String text = null;
+
+        if (update.hasMessage()) {
+            chatId = update.getMessage().getChatId();
+            text = update.getMessage().getText();
+        } else if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+            text = update.getCallbackQuery().getData();
+        }
+
+        if (chatId == null) {
+            log.error("Не удалось получить chatId для SmmScreen");
+            return;
+        }
+
         SendMessage message = new SendMessage();
         message.setChatId(chatId.toString());
-
+        message.setParseMode("HTML");
         message.setText("""
-                    👩‍🎨 Привет! Вы вошли как SMM-специалист.
+                <b>Привет! Вы вошли как SMM-специалист</b>
+                Я помогу вам:
 
-                    Я помогу вам:
+                • отслеживать охваты, вовлечённость, подписки и комментарии
+                • видеть топ-посты и слабые публикации по VK и Instagram
+                • анализировать видео по уровню досмотра
+                • смотреть, какие посты дали заявки и записи
+                • формировать отчёты и делиться ими с врачом
 
-                    • отслеживать охваты, вовлечённость, подписки и комментарии  
-                    • видеть топ-посты и слабые публикации по VK и Instagram  
-                    • анализировать видео по уровню досмотра
-                    • смотреть, какие посты дали заявки и записи  
-                    • формировать отчёты и делиться ими с врачом
-
-                    Выберите действие:
+                <b>Выберите действие:</b>
                 """);
-        message.setReplyMarkup(new InlineKeyboardMarkup(
-                ButtonFactory.smmMenuButtons()
-        ));
+        message.setReplyMarkup(new InlineKeyboardMarkup(MenuFactory.smmMenuButtons()));
 
-        if (text.equalsIgnoreCase("/smm") || text.equalsIgnoreCase("/смм")) {
-            message.setText("Отчет");
+        if (text != null && (text.equalsIgnoreCase("/smm") || text.equalsIgnoreCase("/смм"))) {
+            message.setText("<b>Отчет</b>");
         }
 
         try {
             sender.execute(message);
+            log.info("Отправлено меню SMM пользователю " + chatId);
         } catch (Exception e) {
-            GlobalExceptionHandler.logError(e);
+            log.error("Ошибка при отправке сообщения в SmmScreen: " + e.getMessage());
         }
     }
 }

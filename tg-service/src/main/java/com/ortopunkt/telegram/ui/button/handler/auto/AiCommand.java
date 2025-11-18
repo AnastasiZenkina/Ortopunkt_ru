@@ -1,14 +1,12 @@
-package com.ortopunkt.telegram.ui.button.handler;
+package com.ortopunkt.telegram.ui.button.handler.auto;
 
-import com.ortopunkt.logging.GlobalExceptionHandler;
-import com.ortopunkt.telegram.aiintegration.AiHttpClient;
-import com.ortopunkt.crm.entity.Application;
-import com.ortopunkt.crm.entity.BotUser;
-import com.ortopunkt.crm.service.ApplicationService;
-import com.ortopunkt.crm.service.BotUserService;
-import com.ortopunkt.telegram.ui.button.ButtonCommand;
-import com.ortopunkt.telegram.ui.button.ButtonFactory;
+import com.ortopunkt.logging.ServiceLogger;
 import com.ortopunkt.dto.response.AnalysisResult;
+import com.ortopunkt.dto.response.BotUserResponseDto;
+import com.ortopunkt.telegram.client.CrmClient;
+import com.ortopunkt.telegram.integration.social.AiService;
+import com.ortopunkt.telegram.ui.button.ButtonCommand;
+import com.ortopunkt.telegram.ui.button.MenuFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,11 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AiCommand implements ButtonCommand {
 
-    private static boolean enabled = true; // как ты и хотела — оставляем общий переключатель
+    private static boolean enabled = true;
+    private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
 
-    private final ApplicationService applicationService;
-    private final AiHttpClient aiHttpClient;
-    private final BotUserService botUserService;
+    private final AiService aiService;
+    private final CrmClient crmClient;
 
     public static void toggle() {
         enabled = !enabled;
@@ -44,33 +42,29 @@ public class AiCommand implements ButtonCommand {
         Long chatId = callbackQuery.getMessage().getChatId();
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
-        // ИИ-анализ конкретной заявки
         if (data.startsWith("AI_ANALYZE_")) {
             Long appId = Long.parseLong(data.replace("AI_ANALYZE_", ""));
-            Application app = applicationService.getApplicationById(appId).orElse(null);
-            if (app == null) return;
+            AnalysisResult result = aiService.analyzeApplication(appId);
+            if (result == null) return;
 
-            AnalysisResult result = aiHttpClient.analyze(app.getText());
             SendMessage msg = new SendMessage(chatId.toString(), result.toTelegramMessage());
             try {
                 sender.execute(msg);
             } catch (Exception e) {
-                GlobalExceptionHandler.logError(e);
+                log.error("Ошибка при отправке результата AI-анализа: " + e.getMessage());
             }
             return;
         }
 
-        // Вкл/выкл ИИ автоответчик (оставлено как есть)
         toggle();
 
-        String role = botUserService.getBotUserByTelegramId(chatId)
-                .map(BotUser::getRole)
-                .orElse("PATIENT");
+        BotUserResponseDto user = crmClient.getBotUser(chatId);
+        String role = user != null && user.getRole() != null ? user.getRole() : "PATIENT";
 
         List<List<InlineKeyboardButton>> buttons = switch (role) {
-            case "DOCTOR" -> ButtonFactory.doctorMenuButtons();
-            case "SMM"    -> ButtonFactory.smmMenuButtons();
-            default       -> List.of();
+            case "DOCTOR" -> MenuFactory.doctorMenuButtons();
+            case "SMM" -> MenuFactory.smmMenuButtons();
+            default -> List.of();
         };
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup(buttons);
@@ -83,7 +77,7 @@ public class AiCommand implements ButtonCommand {
         try {
             sender.execute(editMarkup);
         } catch (Exception e) {
-            GlobalExceptionHandler.logError(e);
+            log.error("Ошибка при обновлении клавиатуры AI-кнопки: " + e.getMessage());
         }
     }
 }

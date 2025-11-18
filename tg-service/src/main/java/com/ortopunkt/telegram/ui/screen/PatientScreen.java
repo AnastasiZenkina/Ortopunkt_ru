@@ -1,11 +1,10 @@
 package com.ortopunkt.telegram.ui.screen;
 
-import com.ortopunkt.logging.GlobalExceptionHandler;
+import com.ortopunkt.dto.response.ApplicationResponseDto;
+import com.ortopunkt.logging.ServiceLogger;
+import com.ortopunkt.telegram.client.CrmClient;
+import com.ortopunkt.telegram.integration.ai.ChannelSender;
 import com.ortopunkt.telegram.ui.photo.PhotoHandler;
-import com.ortopunkt.telegram.config.ChannelSender;
-import com.ortopunkt.crm.entity.Application;
-import com.ortopunkt.crm.service.ApplicationService;
-import com.ortopunkt.crm.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,10 +16,10 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 @RequiredArgsConstructor
 public class PatientScreen {
 
-    private final PatientService patientService;
-    private final ApplicationService applicationService;
+    private final CrmClient crmClient;
     private final ChannelSender channelSender;
     private final PhotoHandler photoHandler;
+    private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
 
     public void handle(Update update, AbsSender sender) {
         Long chatId = update.getMessage().getChatId();
@@ -40,13 +39,14 @@ public class PatientScreen {
             if (text.equalsIgnoreCase("/start")) {
                 replyText = "Айдыс Вячеславович на связи! Чем могу помочь?";
             } else {
-                Application app = patientService.processMessage(chatId, username, fullName, text);
-                applicationService.saveApplication(app);
+                ApplicationResponseDto app = crmClient.savePatientMessage(chatId, username, fullName, text);
                 channelSender.send(app, sender);
+                log.info("Получено текстовое сообщение от @" + username + " (" + chatId + ")");
             }
 
         } else if (msg.hasPhoto()) {
             photoHandler.handle(update, sender);
+            log.info("Получено фото от @" + username + " (" + chatId + ")");
             return;
         }
 
@@ -56,8 +56,9 @@ public class PatientScreen {
             message.setText(replyText);
             try {
                 sender.execute(message);
+                log.info("Ответ отправлен пользователю @" + username);
             } catch (Exception e) {
-                GlobalExceptionHandler.logError(e);
+                log.error("Ошибка при отправке сообщения: " + e.getMessage());
             }
         }
     }
