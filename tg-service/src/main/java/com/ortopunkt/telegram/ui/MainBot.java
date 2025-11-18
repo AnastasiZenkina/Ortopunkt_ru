@@ -1,14 +1,15 @@
 package com.ortopunkt.telegram.ui;
 
+import com.ortopunkt.logging.ServiceLogger;
+import com.ortopunkt.telegram.client.CrmClient;
 import com.ortopunkt.telegram.ui.button.ButtonCommand;
+import com.ortopunkt.telegram.ui.button.handler.manual.ManualVkCommand;
+import com.ortopunkt.telegram.ui.button.handler.manual.ManualInstaCommand;
 import com.ortopunkt.telegram.ui.screen.DoctorScreen;
 import com.ortopunkt.telegram.ui.screen.PatientScreen;
 import com.ortopunkt.telegram.ui.screen.SmmScreen;
 import com.ortopunkt.telegram.ui.screen.TargetScreen;
 import com.ortopunkt.telegram.config.BotConfig;
-import com.ortopunkt.crm.entity.BotUser;
-import com.ortopunkt.crm.service.ApplicationService;
-import com.ortopunkt.crm.service.BotUserService;
 import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,17 @@ import java.util.Map;
 public class MainBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
-    private final BotUserService botUserService;
+    private final CrmClient crmClient;
+    private final ManualVkCommand manualVkCommand;
+    private final ManualInstaCommand manualInstaCommand;
     private final DoctorScreen doctorCommandHandler;
     private final SmmScreen smmCommandHandler;
     private final TargetScreen targetCommandHandler;
     private final PatientScreen patientCommandHandler;
-    private final ApplicationService applicationService;
+    private final BotRoleResolver botRoleResolver;
+
+    private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
+
     @Resource(name = "buttonCommandMap")
     private Map<String, ButtonCommand> commandMap;
 
@@ -58,44 +64,34 @@ public class MainBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Long chatId = update.getMessage().getChatId();
             String username = update.getMessage().getFrom().getUserName();
+            String role = botRoleResolver.resolveRole(chatId, username);
 
-            botUserService.getBotUserByTelegramId(chatId).orElseGet(() -> {
-                BotUser user = new BotUser();
-                user.setTelegramId(chatId);
-                user.setUsername(username);
-                user.setRole("PATIENT");
-                return botUserService.saveBotUser(user);
-            });
+            log.info("Новое сообщение от @" + username + " (role=" + role + ")");
 
-            String role = botUserService.getBotUserByTelegramId(chatId)
-                    .map(BotUser::getRole)
-                    .orElse("PATIENT");
+            if (manualVkCommand.handle(update, this)) return;
+            if (manualInstaCommand.handle(update, this)) return;
 
             switch (role) {
                 case "DOCTOR" -> doctorCommandHandler.handle(update, this);
-                case "SMM" -> smmCommandHandler.handle(update, this, applicationService);
-                case "TARGET" -> targetCommandHandler.handle(update, this, applicationService);
-                default -> patientCommandHandler.handle(update, this);
+                case "SMM"    -> smmCommandHandler.handle(update, this, crmClient);
+                case "TARGET" -> targetCommandHandler.handle(update, this, crmClient);
+                default       -> patientCommandHandler.handle(update, this);
             }
         }
     }
 
     private void handleCallback(CallbackQuery cb) {
         String data = cb.getData();
-
-        // ищем первый ключ из карты, который является префиксом для data
         String key = commandMap.keySet()
                 .stream()
                 .filter(data::startsWith)
                 .findFirst()
                 .orElse(null);
 
-        if (key == null) {
-            return;
-        }
+        if (key == null) return;
 
         ButtonCommand cmd = commandMap.get(key);
-        System.out.println("ROUTER: key=" + key + " data=" + data);
+        log.info("ROUTER: key=" + key + " data=" + data);
         cmd.handle(cb, this);
     }
 }

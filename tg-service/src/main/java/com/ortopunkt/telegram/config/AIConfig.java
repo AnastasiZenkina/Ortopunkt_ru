@@ -1,4 +1,4 @@
-package com.ortopunkt.telegram.aiintegration;
+package com.ortopunkt.telegram.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "ai")
 @Getter
 @Setter
-public class AiConfig {
+public class AIConfig {
     private boolean enabled = true;
     private long delayMinutes = 30;
-
-    private String url = "http://localhost:8081/api/ai/response";
+    private String url;
 }

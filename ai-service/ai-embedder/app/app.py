@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 
 app = Flask(__name__)
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+model = SentenceTransformer("/app/models3")
 
 def cosine_similarity(a, b):
     a = np.array(a)
@@ -19,9 +19,8 @@ def embed():
     data = request.get_json()
     if not data or "texts" not in data:
         return jsonify({"error": "Missing 'texts' field"}), 400
-
     embeddings = model.encode(data["texts"], convert_to_numpy=True).tolist()
     return jsonify(embeddings)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5005)
+    app.run(host="0.0.0.0", port=8001)

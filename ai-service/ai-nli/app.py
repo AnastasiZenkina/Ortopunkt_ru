@@ -2,26 +2,28 @@ from flask import Flask, request, jsonify
 from sentence_transformers import SentenceTransformer, util
 
 app = Flask(__name__)
+model = SentenceTransformer("/app/models")
 
-# Загружаем модель
-from huggingface_hub import login
-
-
-model = SentenceTransformer("MoritzLaurer/Multilingual-MiniLMv2-L6-mnli")
+THRESHOLD = 0.35  # порог уверенности
 
 @app.route("/nli", methods=["POST"])
 def classify():
     data = request.get_json()
     premise = data.get("premise")
-    hypothesis = data.get("hypothesis")
+    hypotheses = data.get("hypotheses", [])
 
-    if not premise or not hypothesis:
-        return jsonify({"error": "Both 'premise' and 'hypothesis' are required"}), 400
+    if not premise or not hypotheses:
+        return jsonify({"error": "Fields 'premise' and 'hypotheses' are required"}), 400
 
-    # Используем zero-shot классификацию через cosine similarity
     try:
-        prediction = model.predict([(premise, hypothesis)])
-        return jsonify({"result": prediction})
+        results = {}
+        emb1 = model.encode(premise, convert_to_tensor=True)
+        for h in hypotheses:
+            emb2 = model.encode(h, convert_to_tensor=True)
+            sim = util.pytorch_cos_sim(emb1, emb2).item()
+            results[h] = "yes" if sim > THRESHOLD else "no"
+
+        return jsonify(results)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

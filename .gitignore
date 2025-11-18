@@ -1,41 +1,37 @@
 ### Build output ###
 target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
 ### IntelliJ IDEA ###
 .idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
-
 ### macOS ###
 .DS_Store
 
-### Custom ignores ###
-# Telegram bot token (local only)
-tg-service/src/main/resources/application.properties
+### JARs ###
+*.jar
 
-# All local configs (safety net)
-**/src/main/resources/application.properties
+### === Секретные файлы и конфиги ===
 
-# Ignore local docs
-HELP.md
+# Все application.properties во всех сервисах
+**/application.properties
+
+# Все application.yml/yaml (на будущее)
+**/application.yml
+**/application.yaml
+
+# VK токен
+vk_token.json
+
+# ZIP и временные файлы
+*.zip
+
+# === AI MODELS (НЕ ГРУЗИТЬ НА GITHUB) ===
+ai-service/ai-embedder/app/models/
+ai-service/ai-embedder/app/*.bin
+ai-service/ai-nli/models/
+ai-service/ai-nli/*.bin
+*.onnx
+*.pt

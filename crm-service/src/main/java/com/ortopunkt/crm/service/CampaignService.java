@@ -4,62 +4,76 @@ import com.ortopunkt.dto.request.CampaignRequestDto;
 import com.ortopunkt.dto.response.CampaignResponseDto;
 import com.ortopunkt.crm.entity.Campaign;
 import com.ortopunkt.crm.repository.CampaignRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ortopunkt.logging.ServiceLogger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CampaignService  {
+@RequiredArgsConstructor
+public class CampaignService {
 
-    @Autowired
-    private CampaignRepository campaignRepository;
+    private final CampaignRepository campaignRepository;
+    private final ServiceLogger log = new ServiceLogger(getClass(), "CRM");
 
     public List<Campaign> getAllCampaigns() {
+        log.info("Запрос всех кампаний");
         return campaignRepository.findAll();
     }
 
     public Optional<Campaign> getCampaignById(Long id) {
+        log.info("Получение кампании id=" + id);
         return campaignRepository.findById(id);
     }
 
-    public Campaign saveCampaign(Campaign campaign) {
-        return campaignRepository.save(campaign);
-    }
-
     public void deleteCampaign(Long id) {
+        log.info("Удаление кампании id=" + id);
         campaignRepository.deleteById(id);
     }
 
     public CampaignResponseDto create(CampaignRequestDto dto) {
+        log.info("Создание новой рекламной кампании: " + dto.getName());
         Campaign campaign = new Campaign();
         campaign.setName(dto.getName());
-        campaign.setPlatform(dto.getPlatform());
-        campaign.setType(dto.getType());
+        campaign.setStartDate(dto.getStartDate());
+        campaign.setEndDate(dto.getEndDate());
         campaign.setBudgetPerDay(dto.getBudgetPerDay());
         campaign.setTotalSpent(dto.getTotalSpent());
         campaign.setCtr(dto.getCtr());
-        campaign.setTotalLeads(dto.getTotalLeads());
-        campaign.setStartDate(dto.getStartDate());
-        campaign.setEndDate(dto.getEndDate());
+        campaign.setReach(dto.getReach());
+        campaign.setImpressions(dto.getImpressions());
+        campaign.setSubscribers(dto.getSubscribers());
+        campaign.setMessages(dto.getMessages());
+        campaign.setCpa(dto.getCpa());
 
-        campaign = campaignRepository.save(campaign);
-        return toResponseDto(campaign);
+        Campaign saved = campaignRepository.save(campaign);
+        return toResponseDto(saved);
+    }
+
+    public Optional<CampaignResponseDto> getLatestCampaign() {
+        log.info("Получение последней рекламной кампании");
+        return campaignRepository.findAll().stream()
+                .max(Comparator.comparing(Campaign::getStartDate))
+                .map(this::toResponseDto);
     }
 
     private CampaignResponseDto toResponseDto(Campaign campaign) {
         CampaignResponseDto dto = new CampaignResponseDto();
         dto.setId(campaign.getId());
         dto.setName(campaign.getName());
-        dto.setPlatform(campaign.getPlatform());
-        dto.setType(campaign.getType());
         dto.setStartDate(campaign.getStartDate());
         dto.setEndDate(campaign.getEndDate());
         dto.setBudgetPerDay(campaign.getBudgetPerDay());
         dto.setTotalSpent(campaign.getTotalSpent());
         dto.setCtr(campaign.getCtr());
-        dto.setTotalLeads(campaign.getTotalLeads());
+        dto.setReach(campaign.getReach());
+        dto.setImpressions(campaign.getImpressions());
+        dto.setSubscribers(campaign.getSubscribers());
+        dto.setMessages(campaign.getMessages());
+        dto.setCpa(campaign.getCpa());
         return dto;
     }
 }

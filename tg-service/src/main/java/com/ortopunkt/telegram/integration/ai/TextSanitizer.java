@@ -1,4 +1,4 @@
-package com.ortopunkt.telegram.aiintegration;
+package com.ortopunkt.telegram.integration.ai;
 import java.util.regex.Pattern;
 
 public class TextSanitizer {

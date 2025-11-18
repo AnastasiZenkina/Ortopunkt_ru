@@ -1,6 +1,6 @@
 package com.ortopunkt.telegram.ui.photo;
 
-import com.ortopunkt.crm.entity.Application;
+import com.ortopunkt.dto.response.ApplicationResponseDto;
 
 import java.time.Instant;
 import java.util.*;
@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PhotoCollector {
 
-    private static final Map<Long, List<Application>> buffer = new ConcurrentHashMap<>();
+    private static final Map<Long, List<ApplicationResponseDto>> buffer = new ConcurrentHashMap<>();
     private static final Map<Long, Instant> lastReceivedTime = new ConcurrentHashMap<>();
     private static final long TIMEOUT_SECONDS = 4;
 
-    public static void add(Long chatId, Application app) {
+    public static void add(Long chatId, ApplicationResponseDto app) {
         buffer.computeIfAbsent(chatId, k -> new ArrayList<>()).add(app);
         lastReceivedTime.put(chatId, Instant.now());
     }
@@ -22,8 +22,8 @@ public class PhotoCollector {
         return lastTime != null && Instant.now().isAfter(lastTime.plusSeconds(TIMEOUT_SECONDS));
     }
 
-    public static List<Application> collect(Long chatId) {
-        List<Application> apps = buffer.remove(chatId);
+    public static List<ApplicationResponseDto> collect(Long chatId) {
+        List<ApplicationResponseDto> apps = buffer.remove(chatId);
         lastReceivedTime.remove(chatId);
         return apps != null ? apps : List.of();
     }
