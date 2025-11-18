@@ -4,8 +4,9 @@ RUN pip install --upgrade pip && \
     pip install flask sentence-transformers && \
     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
-COPY app /app
-# COPY model /model
-
 WORKDIR /app
+
+COPY ./app /app
+COPY ./models3 /app/models3
+
 CMD ["python", "app.py"]

@@ -6,14 +6,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {
         "com.ortopunkt.telegram",
-        "com.ortopunkt.crm"
+        "com.ortopunkt.crm",
+        "com.ortopunkt.config"
 })
-
 @EnableScheduling
 public class TgServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TgServiceApplication.class, args);
     }
-
 }

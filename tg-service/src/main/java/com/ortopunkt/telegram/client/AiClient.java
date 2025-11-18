@@ -1,4 +1,4 @@
-package com.ortopunkt.telegram.aiintegration;
+package com.ortopunkt.telegram.client;
 
 import com.ortopunkt.dto.request.AiRequest;
 import com.ortopunkt.dto.response.AiResponse;
@@ -7,16 +7,16 @@ import com.ortopunkt.logging.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.ortopunkt.logging.GlobalExceptionHandler;
 
 @Service
-public class AiHttpClient {
+public class AiClient {
 
     private final RestTemplate restTemplate;
-    private final String aiUrl; // ожидаю, что это что-то вроде http://localhost:8081/api/ai
+    private final String aiUrl;
 
-    public AiHttpClient(@Value("${ai.url}") String aiUrl) {
-        this.restTemplate = new RestTemplate();
+    public AiClient(RestTemplate restTemplate,
+                    @Value("${ai.url}") String aiUrl) {
+        this.restTemplate = restTemplate;
         this.aiUrl = aiUrl;
     }
 
@@ -25,28 +25,27 @@ public class AiHttpClient {
             AiRequest req = new AiRequest();
             req.setText(text);
             req.setHasPhoto(hasPhoto);
-
             return restTemplate.postForObject(
-                    aiUrl + "/response",  // => /api/ai/response
+                    aiUrl + "/api/ai/response",
                     req,
                     AiResponse.class
             );
         } catch (Exception e) {
             GlobalExceptionHandler.logError(e);
-            return new AiResponse("Спасибо за сообщение! Врач посмотрит и ответит вам лично 🌿");
+            return new AiResponse("Спасибо за сообщение! Врач посмотрит и ответит вам лично.");
         }
     }
 
     public AnalysisResult analyze(String text) {
         try {
             return restTemplate.postForObject(
-                    aiUrl + "/analyze",   // => /api/ai/analyze
+                    aiUrl + "/api/ai/analyze",
                     text,
                     AnalysisResult.class
             );
         } catch (Exception e) {
             GlobalExceptionHandler.logError(e);
-            return null;
+            return new AnalysisResult();
         }
     }
 }
