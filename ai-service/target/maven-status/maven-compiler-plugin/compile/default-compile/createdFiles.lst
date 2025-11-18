@@ -1,6 +1,0 @@
-com/ortopunkt/ai/controller/AiController.class
-com/ortopunkt/ai/AiServiceApplication.class
-com/ortopunkt/ai/analysis/AiAnalyzer.class
-com/ortopunkt/ai/service/AiService.class
-com/ortopunkt/ai/topic/AiTopicClassifier.class
-com/ortopunkt/ai/topic/ReplyTemplates.class
