@@ -16,6 +16,7 @@
         <module>tg-service</module>
         <module>ai-service</module>
         <module>analytics-service</module>
+        <module>common-config</module>
     </modules>
 
     <properties>

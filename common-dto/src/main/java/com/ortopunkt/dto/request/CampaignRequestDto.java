@@ -4,14 +4,18 @@ import java.time.LocalDate;
 
 @Data
 public class CampaignRequestDto {
+
     private String name;
-    private String platform;
-    private String type;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private Double budgetPerDay;
-    private Double totalSpent;
-    private Double ctr;
-    private Integer totalLeads;
+    private LocalDate startDate;       // дата начала кампании
+    private LocalDate endDate;         // дата окончания кампании
+    private Double budgetPerDay;       // дневной бюджет
+    private Double totalSpent;         // общие затраты
+    private Double ctr;                // CTR кампании
+
+    private Long reach;               // охват рекламы
+    private Long impressions;         // показы
+    private Long subscribers;         // подписки с рекламы
+    private Long messages;           // сообщения с рекламы
+    private Double cpa;              // цена подписчика (CPA)
 
 }
