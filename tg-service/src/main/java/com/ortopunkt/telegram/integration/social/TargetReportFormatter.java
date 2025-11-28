@@ -15,7 +15,7 @@ public class TargetReportFormatter {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<b>Реклама (VK):</b>\n\n");
+        sb.append("\uD83D\uDCCC <b>Реклама (VK):</b>\n\n");
         sb.append("• Подписчики: ").append(safeValue(campaignDto.getSubscribers())).append("\n");
         sb.append("• Сообщения: ").append(safeValue(campaignDto.getMessages())).append("\n");
         sb.append("• Цена подписчика: ").append(String.format(Locale.US, "%.2f", campaignDto.getCpa())).append("\n");

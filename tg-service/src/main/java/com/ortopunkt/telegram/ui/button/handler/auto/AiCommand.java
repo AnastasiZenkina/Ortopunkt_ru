@@ -77,6 +77,12 @@ public class AiCommand implements ButtonCommand {
         try {
             sender.execute(editMarkup);
         } catch (Exception e) {
+
+            if (e.getMessage() != null &&
+                    e.getMessage().contains("message is not modified")) {
+                return;
+            }
+
             log.error("Ошибка при обновлении клавиатуры AI-кнопки: " + e.getMessage());
         }
     }

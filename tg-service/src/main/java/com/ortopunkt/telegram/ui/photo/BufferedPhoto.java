@@ -2,7 +2,6 @@ package com.ortopunkt.telegram.ui.photo;
 
 import com.ortopunkt.dto.request.ApplicationRequestDto;
 import com.ortopunkt.dto.response.ApplicationResponseDto;
-import com.ortopunkt.dto.response.PatientResponseDto;
 import com.ortopunkt.logging.ServiceLogger;
 import com.ortopunkt.telegram.client.CrmClient;
 import com.ortopunkt.telegram.integration.ai.ChannelSender;
@@ -34,40 +33,43 @@ public class BufferedPhoto {
 
             List<String> allPhotos = new ArrayList<>();
             String commonText = "";
-            PatientResponseDto patient = null;
+            String username = null;
+            String fullName = null;
 
             for (var a : apps) {
-                if (a.getPhotoFileIds() != null) allPhotos.addAll(a.getPhotoFileIds());
+                if (a.getPhotoFileIds() != null)
+                    allPhotos.addAll(a.getPhotoFileIds());
+
                 if (commonText.isEmpty() && a.getText() != null && !a.getText().isEmpty())
                     commonText = a.getText();
-                if (patient == null && a.getPatient() != null)
-                    patient = a.getPatient();
+
+                if (username == null && a.getPatient() != null)
+                    username = a.getPatient().getUsername();
+
+                if (fullName == null && a.getPatient() != null)
+                    fullName = a.getPatient().getName();
             }
+
+            if (username == null || username.isBlank())
+                username = "unknown";
+
+            if (fullName == null || fullName.isBlank())
+                fullName = "Без имени";
 
             try {
                 ApplicationRequestDto dto = new ApplicationRequestDto();
+                dto.setTgId(chatId.toString());
+                dto.setUsername(username);
+                dto.setName(fullName);
                 dto.setText(commonText);
-                dto.setSource("telegram");
-                dto.setChannel("bot");
                 dto.setPhotoFileIds(allPhotos);
-                if (patient != null) dto.setPatientId(patient.getId());
-                else dto.setPatientId(chatId);
 
                 ApplicationResponseDto saved = crmClient.sendApplication(dto);
-
-                if (patient != null) {
-                    saved.setPatient(patient);
-                } else {
-                    PatientResponseDto fallback = new PatientResponseDto();
-                    fallback.setName("Без имени");
-                    fallback.setUsername("нет username");
-                    saved.setPatient(fallback);
-                }
 
                 channelSender.send(saved, botSender);
                 log.info("Buffered photos saved and sent for chatId " + chatId);
 
-                botSender.execute(new SendMessage(chatId.toString(), "Спасибо за фото! Мы с вами свяжемся"));
+                botSender.execute(new SendMessage(chatId.toString(), "Спасибо за обращение и фото! Врач сейчас на операции и ответит вам как только сможет"));
             } catch (Exception e) {
                 log.error("Ошибка при обработке фото для chatId " + chatId + ": " + e.getMessage());
             }

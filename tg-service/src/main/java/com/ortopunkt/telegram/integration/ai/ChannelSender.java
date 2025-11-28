@@ -5,6 +5,7 @@ import com.ortopunkt.dto.response.PatientResponseDto;
 import com.ortopunkt.logging.GlobalExceptionHandler;
 import com.ortopunkt.telegram.ui.button.MenuFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,7 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChannelSender {
 
-    private static final String CHANNEL_ID = "-1002677424734";
+    @Value("${telegram.channel.id}")
+    private String channelId;
 
     public void send(ApplicationResponseDto app, AbsSender sender) {
         String caption = buildCaption(app);
@@ -54,7 +56,7 @@ public class ChannelSender {
 
     private void sendSinglePhoto(String fileId, String caption, AbsSender sender) {
         SendPhoto photo = new SendPhoto();
-        photo.setChatId(CHANNEL_ID);
+        photo.setChatId(channelId);
         photo.setPhoto(new InputFile(fileId));
         if (!caption.isEmpty()) {
             photo.setCaption(caption);
@@ -79,7 +81,7 @@ public class ChannelSender {
             mediaGroup.add(media);
         }
         try {
-            sender.execute(new SendMediaGroup(CHANNEL_ID, mediaGroup));
+            sender.execute(new SendMediaGroup(channelId, mediaGroup));
         } catch (Exception e) {
             GlobalExceptionHandler.logError(e);
         }
@@ -87,7 +89,7 @@ public class ChannelSender {
 
     private void sendButtons(ApplicationResponseDto app, AbsSender sender) {
         SendMessage buttons = new SendMessage();
-        buttons.setChatId(CHANNEL_ID);
+        buttons.setChatId(channelId);
         buttons.setText("Выберите действие");
         buttons.setReplyMarkup(MenuFactory.updatedKeyboard(app));
         buttons.enableHtml(true);
@@ -100,7 +102,7 @@ public class ChannelSender {
 
     private void sendTextMessage(ApplicationResponseDto app, String caption, AbsSender sender) {
         SendMessage msg = new SendMessage();
-        msg.setChatId(CHANNEL_ID);
+        msg.setChatId(channelId);
         msg.setText(caption);
         msg.setReplyMarkup(MenuFactory.updatedKeyboard(app));
         msg.enableHtml(true);

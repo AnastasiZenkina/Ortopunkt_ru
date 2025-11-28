@@ -19,7 +19,7 @@ public class SmmReportFormatter {
         String monthYear = vkDto != null ? vkDto.getMonthYear() : null;
 
         if (monthYear != null) {
-            sb.append("<b>Отчёт за ").append(monthYear).append("</b>\n\n");
+            sb.append("\uD83D\uDCCC <b>Отчёт за ").append(monthYear).append("</b>\n\n");
         }
 
         if (vkDto != null) {

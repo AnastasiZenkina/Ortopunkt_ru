@@ -2,7 +2,6 @@ package com.ortopunkt.telegram.ui.photo;
 
 import com.ortopunkt.dto.request.ApplicationRequestDto;
 import com.ortopunkt.dto.response.ApplicationResponseDto;
-import com.ortopunkt.dto.response.PatientResponseDto;
 import com.ortopunkt.logging.ServiceLogger;
 import com.ortopunkt.telegram.client.CrmClient;
 import lombok.RequiredArgsConstructor;
@@ -26,30 +25,30 @@ public class PhotoHandler {
         String caption = msg.getCaption() != null ? msg.getCaption() : "";
 
         try {
-            ApplicationRequestDto dto = new ApplicationRequestDto();
-            dto.setPatientId(chatId);
-            dto.setText(caption);
-            dto.setSource("telegram");
-            dto.setChannel("bot");
-
-            ApplicationResponseDto saved = crmClient.sendApplication(dto);
-
-            String fileId = msg.getPhoto().get(msg.getPhoto().size() - 1).getFileId();
-            saved.setPhotoFileIds(List.of(fileId));
+            String fileId = msg.getPhoto()
+                    .get(msg.getPhoto().size() - 1)
+                    .getFileId();
 
             String firstName = msg.getFrom().getFirstName();
             String lastName = msg.getFrom().getLastName();
-            String fullName = (firstName != null ? firstName : "") +
-                    (lastName != null ? " " + lastName : "");
+            String fullName = (firstName != null ? firstName : "")
+                    + (lastName != null ? " " + lastName : "");
+            fullName = fullName.trim();
+            if (fullName.isBlank()) fullName = "Без имени";
 
-            PatientResponseDto patient = new PatientResponseDto();
-            patient.setTgId(chatId.toString());
-            patient.setName(fullName.isBlank() ? "Без имени" : fullName.trim());
-            patient.setUsername(msg.getFrom().getUserName());
-            saved.setPatient(patient);
+            ApplicationRequestDto dto = new ApplicationRequestDto();
+            dto.setTgId(chatId.toString());
+            dto.setUsername(msg.getFrom().getUserName());
+            dto.setName(fullName);
+            dto.setText(caption);
+            dto.setPhotoFileIds(List.of(fileId));
+
+            ApplicationResponseDto saved = crmClient.sendApplication(dto);
+            saved.setPhotoFileIds(List.of(fileId));
 
             PhotoCollector.add(chatId, saved);
             log.info("Фото получено и сохранено для chatId " + chatId);
+
         } catch (Exception e) {
             log.error("Ошибка при обработке фото для chatId " + chatId + ": " + e.getMessage());
         }

@@ -40,7 +40,7 @@ public class ButtonFactory {
     }
 
     public static InlineKeyboardButton answerChatButton(ApplicationResponseDto app) {
-        boolean answered = "Отвечено".equals(app.getStatus());
+        boolean answered = "ANSWERED".equals(app.getStatus());
         return InlineKeyboardButton.builder()
                 .text(answered ? "Отвечено ✅" : "Ответить")
                 .callbackData("ANSWER_" + app.getId())

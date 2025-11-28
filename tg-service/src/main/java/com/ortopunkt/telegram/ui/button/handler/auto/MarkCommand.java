@@ -26,7 +26,7 @@ public class MarkCommand implements ButtonCommand {
 
         try {
             ApplicationResponseDto app = crmClient.getApplication(appId);
-            String newStatus = "Записан".equals(app.getStatus()) ? "Новый" : "Записан";
+            String newStatus = "BOOKED".equals(app.getStatus()) ? "NEW" : "BOOKED";
             crmClient.updateApplicationStatus(appId, newStatus);
 
             ApplicationResponseDto updatedApp = crmClient.getApplication(appId);
@@ -39,7 +39,7 @@ public class MarkCommand implements ButtonCommand {
             sender.execute(edit);
 
         } catch (Exception e) {
-            log.error("Ошибка при обновлении кнопок 'Записан': " + e.getMessage());
+            log.error("Ошибка при обновлении кнопок 'BOOKED': " + e.getMessage());
         }
     }
 

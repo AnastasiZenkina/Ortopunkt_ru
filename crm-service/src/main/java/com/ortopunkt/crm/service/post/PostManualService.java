@@ -27,7 +27,6 @@ public class PostManualService {
                 .orElseGet(() -> {
                     Post p = new Post();
                     p.setMonthYear(YearMonth.now().toString());
-                    p.setPostDate(LocalDate.now());
                     return p;
                 });
 

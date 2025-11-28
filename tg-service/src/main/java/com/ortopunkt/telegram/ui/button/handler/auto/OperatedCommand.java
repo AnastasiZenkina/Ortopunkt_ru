@@ -27,29 +27,20 @@ public class OperatedCommand implements ButtonCommand {
 
         if (data.startsWith("OPERATED_PAID_")) {
             appId = parseId(data, "OPERATED_PAID_");
-            selectedStatus = "Прооперирован платно";
+            selectedStatus = "PAID";
         } else if (data.startsWith("OPERATED_QUOTA_")) {
             appId = parseId(data, "OPERATED_QUOTA_");
-            selectedStatus = "Прооперирован по квоте";
+            selectedStatus = "QUOTA";
         }
 
         if (appId == null || selectedStatus == null) return;
 
         try {
             ApplicationResponseDto app = crmClient.getApplication(appId);
-            String current = app.getStatus();
 
-            if (current == null || current.isBlank()) {
-                crmClient.updateApplicationStatus(appId, "Записан");
-                app = crmClient.getApplication(appId);
-                current = app.getStatus();
-            }
+            Long patientId = app.getPatient().getId();
+            crmClient.updatePatientPaymentStatus(patientId, selectedStatus);
 
-            if (!selectedStatus.equals(current)) {
-                crmClient.updateApplicationStatus(appId, selectedStatus);
-            }
-
-            app = crmClient.getApplication(appId);
             InlineKeyboardMarkup markup = MenuFactory.updatedKeyboard(app);
             EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
             edit.setChatId(cb.getMessage().getChatId().toString());

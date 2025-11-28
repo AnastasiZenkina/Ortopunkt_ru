@@ -1,5 +1,6 @@
 package com.ortopunkt.telegram.ui.screen;
 
+import com.ortopunkt.dto.request.ApplicationRequestDto;
 import com.ortopunkt.dto.response.ApplicationResponseDto;
 import com.ortopunkt.logging.ServiceLogger;
 import com.ortopunkt.telegram.client.CrmClient;
@@ -22,15 +23,20 @@ public class PatientScreen {
     private final ServiceLogger log = new ServiceLogger(getClass(), "TG");
 
     public void handle(Update update, AbsSender sender) {
-        Long chatId = update.getMessage().getChatId();
-        String username = update.getMessage().getFrom().getUserName();
-        String firstName = update.getMessage().getFrom().getFirstName();
-        String lastName = update.getMessage().getFrom().getLastName();
+
+        Message msg = update.getMessage();
+        if (msg == null || msg.getFrom() == null) return;
+
+        Long chatId = msg.getChatId();
+        String username = msg.getFrom().getUserName();
+        String firstName = msg.getFrom().getFirstName();
+        String lastName = msg.getFrom().getLastName();
 
         String fullName = (firstName != null ? firstName : "") +
                 (lastName != null ? " " + lastName : "");
+        fullName = fullName.trim();
+        if (fullName.isBlank()) fullName = "Без имени";
 
-        Message msg = update.getMessage();
         String replyText = null;
 
         if (msg.hasText()) {
@@ -39,7 +45,13 @@ public class PatientScreen {
             if (text.equalsIgnoreCase("/start")) {
                 replyText = "Айдыс Вячеславович на связи! Чем могу помочь?";
             } else {
-                ApplicationResponseDto app = crmClient.savePatientMessage(chatId, username, fullName, text);
+                ApplicationRequestDto dto = new ApplicationRequestDto();
+                dto.setTgId(chatId.toString());
+                dto.setUsername(username);
+                dto.setName(fullName);
+                dto.setText(text);
+
+                ApplicationResponseDto app = crmClient.sendApplication(dto);
                 channelSender.send(app, sender);
                 log.info("Получено текстовое сообщение от @" + username + " (" + chatId + ")");
             }

@@ -26,14 +26,11 @@ public class AnswerCommand implements ButtonCommand {
 
         try {
             ApplicationResponseDto currentApp = crmClient.getApplication(appId);
-            String newStatus = "Отвечено".equals(currentApp.getStatus()) ? "Новый" : "Отвечено";
+            String newStatus = "ANSWERED".equals(currentApp.getStatus()) ? "NEW" : "ANSWERED";
             crmClient.updateApplicationStatus(appId, newStatus);
 
             ApplicationResponseDto updatedApp = crmClient.getApplication(appId);
             InlineKeyboardMarkup updatedMarkup = MenuFactory.updatedKeyboard(updatedApp);
-
-            if (query.getMessage().getReplyMarkup() != null
-                    && query.getMessage().getReplyMarkup().equals(updatedMarkup)) return;
 
             EditMessageReplyMarkup editMarkup = new EditMessageReplyMarkup();
             editMarkup.setChatId(query.getMessage().getChatId().toString());

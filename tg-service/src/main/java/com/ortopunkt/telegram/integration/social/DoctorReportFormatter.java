@@ -23,7 +23,7 @@ public class DoctorReportFormatter {
         String monthYear = vkDto != null ? vkDto.getMonthYear() : null;
 
         if (monthYear != null) {
-            sb.append("<b>Отчёт за ").append(monthYear).append("</b>\n\n");
+            sb.append("\uD83D\uDCCC <b>Отчёт за ").append(monthYear).append("</b>\n\n");
         }
 
         if (vkDto != null) {
@@ -41,16 +41,16 @@ public class DoctorReportFormatter {
                     .append(" подписчиков (в группе)</b>\n\n");
 
             sb.append("• Подписчики: ").append(safeValue(total)).append("\n");
-            sb.append("  — реклама: ").append(safeValue(ads)).append("\n");
-            sb.append("  — смм: ").append(safeValue(organic)).append("\n");
-            sb.append("  — цена подписчика: ").append(String.format(Locale.US, "%.2f", cpa)).append("₽\n\n");
+            sb.append("  → реклама: ").append(safeValue(ads)).append("\n");
+            sb.append("  → смм: ").append(safeValue(organic)).append("\n");
+            sb.append("  → цена подписчика: ").append(String.format(Locale.US, "%.2f", cpa)).append("₽\n\n");
 
             sb.append("• Сообщения: ").append(safeValue(vkMessages)).append("\n");
-            sb.append("  — реклама: ").append(safeValue(adsMessages)).append("\n\n");
+            sb.append("  → реклама: ").append(safeValue(adsMessages)).append("\n\n");
 
             sb.append("• Комментарии: ").append(safeValue(vkDto.getVkComments())).append("\n");
             sb.append("• Охват: ").append(safeValue(vkReach)).append("\n");
-            sb.append("  — реклама: ").append(safeValue(adsReach)).append("\n\n");
+            sb.append("  → реклама: ").append(safeValue(adsReach)).append("\n\n");
 
             sb.append("• Лучший пост: ");
             if (vkDto.getBestPostUrl() != null && !vkDto.getBestPostUrl().isBlank()) {
