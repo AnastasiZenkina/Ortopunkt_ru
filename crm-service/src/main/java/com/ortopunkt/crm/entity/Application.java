@@ -13,26 +13,19 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @ManyToOne
-    @JoinColumn(name = "campaign_id")
-    private Campaign campaign;
-
     private String text;
     private String status;
-    private String paymentStatus;
-    private String source;
-    private String channel;
-    private boolean targetOrSpam;
     private LocalDate createdAt;
-    private String adType;
-    private String creative;
+
     private boolean answeredByHuman = false;
     private boolean answeredByAi = false;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "application_photo_file_ids", joinColumns = @JoinColumn(name = "application_id"))
+    @Column(name = "photo_file_ids")
     private List<String> photoFileIds;
 }

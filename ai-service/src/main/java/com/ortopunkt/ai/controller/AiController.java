@@ -26,7 +26,7 @@ public class AiController {
 
     @PostMapping("/classify")
     public Topic classify(@RequestBody String text) {
-        return classifier.classify(text); // теперь возвращает Topic
+        return classifier.classify(text);
     }
 
     @PostMapping("/analyze")

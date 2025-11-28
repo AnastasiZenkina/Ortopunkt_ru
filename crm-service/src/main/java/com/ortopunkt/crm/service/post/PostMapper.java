@@ -30,6 +30,10 @@ public class PostMapper {
         if (dto.getInstaShares() != null) post.setInstaShares(dto.getInstaShares());
         if (dto.getInstaBestPostUrl() != null) post.setInstaBestPostUrl(dto.getInstaBestPostUrl());
         if (dto.getInstaWorstPostUrl() != null) post.setInstaWorstPostUrl(dto.getInstaWorstPostUrl());
+        if (dto.getPostId() != null) post.setPostId(dto.getPostId());
+        if (dto.getTitle() != null) post.setTitle(dto.getTitle());
+        if (dto.getPostDate() != null) post.setPostDate(dto.getPostDate());
+        if (dto.getViews() != null) post.setViews(dto.getViews());
     }
 
     public static void applyVkManual(PostRequestDto dto, Post post) {
@@ -66,6 +70,10 @@ public class PostMapper {
         dto.setInstaShares(post.getInstaShares());
         dto.setInstaBestPostUrl(post.getInstaBestPostUrl());
         dto.setInstaWorstPostUrl(post.getInstaWorstPostUrl());
+        dto.setPostId(post.getPostId());
+        dto.setTitle(post.getTitle());
+        dto.setPostDate(post.getPostDate());
+        dto.setViews(post.getViews());
         return dto;
     }
 }

@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  nli-service:
+    build: .
+    ports:
+      - "8002:8002"
+    restart: unless-stopped

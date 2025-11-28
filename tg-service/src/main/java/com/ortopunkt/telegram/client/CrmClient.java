@@ -42,12 +42,10 @@ public class CrmClient {
 
     public ApplicationResponseDto getApplication(Long id) {
         try {
-            ApplicationResponseDto response = restTemplate.getForObject(
+            return restTemplate.getForObject(
                     crmUrl + "/api/applications/" + id,
                     ApplicationResponseDto.class
             );
-            log.info("Ответ CRM для заявки " + id + ": " + response);
-            return response;
         } catch (Exception e) {
             log.error("Ошибка при получении заявки " + id + ": " + e.getMessage());
             return null;
@@ -56,31 +54,17 @@ public class CrmClient {
 
     public void updateApplicationStatus(Long id, String status) {
         String url = crmUrl + "/api/applications/" + id + "/status?status=" + status;
+        restTemplate.put(url, null);
+    }
 
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                restTemplate.put(url, null);
-                log.info("Статус заявки " + id + " обновлён на: " + status);
-                return;
-            } catch (Exception e) {
-                if (attempt == 3) {
-                    log.error("Ошибка при обновлении статуса (3 попытки): " + e.getMessage());
-                } else {
-                    try {
-                        Thread.sleep(1000L * attempt);
-                    } catch (InterruptedException ignored) {}
-                }
-            }
-        }
+    public void updatePatientPaymentStatus(Long patientId, String value) {
+        String url = crmUrl + "/api/patients/" + patientId + "/payment-status?value=" + value;
+        restTemplate.put(url, null);
     }
 
     public void markAsAnswered(Long id) {
         String url = crmUrl + "/api/applications/" + id + "/status?status=HUMAN_ANSWERED";
-        try {
-            restTemplate.put(url, null);
-        } catch (Exception e) {
-            log.error("Ошибка при отметке заявки как отвеченной: " + e.getMessage());
-        }
+        restTemplate.put(url, null);
     }
 
     public BotUserResponseDto getBotUser(Long telegramId) {
@@ -111,21 +95,5 @@ public class CrmClient {
                 ApplicationResponseDto[].class
         );
         return array != null ? List.of(array) : List.of();
-    }
-
-    public ApplicationResponseDto savePatientMessage(Long chatId, String username, String fullName, String text) {
-        ApplicationRequestDto dto = new ApplicationRequestDto();
-        dto.setText(text);
-        dto.setSource("telegram");
-        dto.setChannel(username != null ? username : fullName);
-        dto.setUsername(username);
-        dto.setFullName(fullName);
-        dto.setChatId(chatId);
-
-        return restTemplate.postForObject(
-                crmUrl + "/api/applications/from-message",
-                dto,
-                ApplicationResponseDto.class
-        );
     }
 }

@@ -64,7 +64,7 @@ public class MenuFactory {
         return new InlineKeyboardMarkup(List.of(
                 List.of(
                         ButtonFactory.answerChatButton(app),
-                        ButtonFactory.markButton(app.getId(), "Записан".equals(app.getStatus()))
+                        ButtonFactory.markButton(app.getId(), "BOOKED".equals(app.getStatus()))
                 ),
                 List.of(
                         ButtonFactory.aiAnalysisButton(app.getId()),

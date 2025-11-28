@@ -1,12 +1,11 @@
 FROM python:3.10-slim
 
-RUN pip install --upgrade pip && \
-    pip install flask sentence-transformers && \
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-
 WORKDIR /app
 
-COPY ./app /app
-COPY ./models3 /app/models3
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./models /app/models
+COPY . .
 
 CMD ["python", "app.py"]

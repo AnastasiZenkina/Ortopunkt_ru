@@ -13,8 +13,8 @@ public class ApplicationsAggregator {
     public Map<String, Integer> aggregate(List<ApplicationResponseDto> recent) {
         Map<String, Integer> result = new HashMap<>();
         result.put("booked", countBooked(recent));
-        result.put("operatedPaid", countOperatedPaid(recent));
-        result.put("operatedQuota", countOperatedQuota(recent));
+        result.put("operatedPaid", countOperated(recent, "PAID"));
+        result.put("operatedQuota", countOperated(recent, "QUOTA"));
         return result;
     }
 
@@ -22,26 +22,23 @@ public class ApplicationsAggregator {
         return countByStatus(apps, s -> containsAny(s, "ЗАПИС", "BOOK"));
     }
 
-    private int countOperatedPaid(List<ApplicationResponseDto> apps) {
-        return countByPaymentStatus(apps, "PAID");
-    }
-
-    private int countOperatedQuota(List<ApplicationResponseDto> apps) {
-        return countByPaymentStatus(apps, "QUOTA");
-    }
-
-    private int countByStatus(List<ApplicationResponseDto> apps, java.util.function.Predicate<String> statusMatch) {
+    private int countOperated(List<ApplicationResponseDto> apps, String code) {
         return apps.stream()
-                .filter(a -> statusMatch.test(norm(a.getStatus())))
+                .filter(app -> {
+                    PatientResponseDto p = app.getPatient();
+                    return p != null
+                            && p.getPaymentStatus() != null
+                            && p.getPaymentStatus().equalsIgnoreCase(code);
+                })
                 .map(this::uniqueKey)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet())
                 .size();
     }
 
-    private int countByPaymentStatus(List<ApplicationResponseDto> apps, String code) {
+    private int countByStatus(List<ApplicationResponseDto> apps, java.util.function.Predicate<String> statusMatch) {
         return apps.stream()
-                .filter(a -> code.equalsIgnoreCase(a.getPaymentStatus()))
+                .filter(a -> statusMatch.test(norm(a.getStatus())))
                 .map(this::uniqueKey)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet())

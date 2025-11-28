@@ -35,7 +35,7 @@ public class SmmScreen {
         message.setChatId(chatId.toString());
         message.setParseMode("HTML");
         message.setText("""
-                <b>Привет! Вы вошли как SMM-специалист</b>
+                <b>Здравствуйте! Вы вошли как SMM-специалист</b>
                 Я помогу вам:
 
                 • отслеживать охваты, вовлечённость, подписки и комментарии

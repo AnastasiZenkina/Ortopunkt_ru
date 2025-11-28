@@ -4,6 +4,7 @@ import com.ortopunkt.analyticsservice.client.VkAdsClient;
 import com.ortopunkt.dto.response.CampaignResponseDto;
 import com.ortopunkt.logging.ServiceLogger;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -17,7 +18,19 @@ public class VkAdsService {
     private final VkAdsParser vkAdsParser;
     private final ServiceLogger log = new ServiceLogger(getClass(), "ANALYTICS");
 
+    private List<CampaignResponseDto> cachedStats = List.of();
+
+    @Scheduled(fixedRate = 10000)
+    public void refreshCache() {
+        cachedStats = loadStats();
+        log.info("Кэш VK Ads обновлён: " + cachedStats.size() + " записей");
+    }
+
     public List<CampaignResponseDto> getLastMonthStats() {
+        return cachedStats;
+    }
+
+    private List<CampaignResponseDto> loadStats() {
         try {
             YearMonth prev = YearMonth.now().minusMonths(1);
             String from = prev.atDay(1).toString();
@@ -27,6 +40,16 @@ public class VkAdsService {
 
             String json = vkAdsClient.fetchCampaignsJson(from, to).join();
             List<CampaignResponseDto> stats = vkAdsParser.parseCampaigns(json);
+
+            long sum = stats.stream()
+                    .map(CampaignResponseDto::getReach)
+                    .filter(Objects::nonNull)
+                    .mapToLong(Long::longValue)
+                    .sum();
+
+            if (!stats.isEmpty()) {
+                stats.get(0).setReach(sum);
+            }
 
             List<Long> planIds = stats.stream()
                     .map(CampaignResponseDto::getId)

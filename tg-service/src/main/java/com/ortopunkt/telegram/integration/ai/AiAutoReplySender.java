@@ -4,6 +4,7 @@ import com.ortopunkt.dto.response.ApplicationResponseDto;
 import com.ortopunkt.dto.response.AiResponse;
 import com.ortopunkt.telegram.client.AiClient;
 import com.ortopunkt.telegram.client.CrmClient;
+import com.ortopunkt.telegram.ui.button.handler.auto.AiCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,28 +28,33 @@ public class AiAutoReplySender {
     private static final Set<Long> IN_PROGRESS = ConcurrentHashMap.newKeySet();
 
     public void send(ApplicationResponseDto app) {
+        if (!AiCommand.isEnabled()) return;
         if (app == null) return;
         if (app.isAnsweredByAi()) return;
+
         Long appId = app.getId();
         if (!IN_PROGRESS.add(appId)) return;
+
         try {
             ApplicationResponseDto crmApp = crmClient.getApplication(appId);
             if (crmApp == null) return;
-            if (Boolean.TRUE.equals(crmApp.isAnsweredByAi())) return;
+            if (crmApp.isAnsweredByAi()) return;
+
             String text = crmApp.getText() != null ? crmApp.getText() : app.getText();
             if (crmApp.getPatient() == null) return;
+
             if (!TextSanitizer.isSafe(text)) {
                 sendFallbackMessage(crmApp);
                 return;
             }
+
             boolean hasPhotos = crmApp.getPhotoFileIds() != null && !crmApp.getPhotoFileIds().isEmpty();
             String replyText = getAiReply(text, hasPhotos);
-            if (replyText == null || replyText.isBlank()) {
-                log.warn("AI не дал ответа — пациенту ничего не отправляем");
-                return;
-            }
+            if (replyText == null || replyText.isBlank()) return;
+
             sendAiReply(crmApp, replyText);
             markAsAnswered(crmApp);
+
         } catch (Exception e) {
             log.error("Ошибка в процессе отправки AI-ответа", e);
         } finally {

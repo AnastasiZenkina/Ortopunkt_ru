@@ -11,19 +11,9 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String monthYear;
+
     private Long vkMembersTotal;
-    private Long instaFollowersTotal;
-    private String bestPostUrl;
-    private String bestPostTitle;
-    private String worstPostUrl;
-    private String worstPostTitle;
-    private String instaBestPostUrl;
-    private String instaWorstPostUrl;
-
-    private String title;
-    private LocalDate postDate;
-    private Integer views;
-
     private Integer vkSubscribers;
     private Integer vkVisitors;
     private Integer vkMessages;
@@ -31,7 +21,12 @@ public class Post {
     private Integer vkLikes;
     private Integer vkComments;
     private Integer vkShares;
+    private String bestPostUrl;
+    private String bestPostTitle;
+    private String worstPostUrl;
+    private String worstPostTitle;
 
+    private Long instaFollowersTotal;
     private Integer instaSubscribers;
     private Integer instaVisitors;
     private Integer instaMessages;
@@ -39,6 +34,12 @@ public class Post {
     private Integer instaLikes;
     private Integer instaComments;
     private Integer instaShares;
+    private String instaBestPostUrl;
+    private String instaWorstPostUrl;
 
-    private String monthYear;
+    private Long postId;
+    private String title;
+    private LocalDate postDate;
+    private Integer views;
+
 }

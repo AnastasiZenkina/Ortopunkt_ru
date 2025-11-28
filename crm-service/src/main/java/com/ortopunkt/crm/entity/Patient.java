@@ -13,15 +13,7 @@ public class Patient {
     private Long id;
 
     private String name;
-    private String city;
-    private String country;
-    private String phone;
-    private String email;
-    private String vkId;
     private String tgId;
     private String username;
-    private String instaId;
-    private String typeOfPayment;
-
-    private LocalDate  operationDate;
+    private String paymentStatus;
 }

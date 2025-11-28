@@ -1,37 +1,51 @@
-### Build output ###
 target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
 ### IntelliJ IDEA ###
-.idea/
+.idea
 *.iws
 *.iml
 *.ipr
 
-### macOS ###
-.DS_Store
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### JARs ###
+### VS Code ###
+.vscode/
+
+vk_token.json
 *.jar
 
-### === Секретные файлы и конфиги ===
+# -------- ai-embedder --------
+ai-embedder/models/**
+!ai-embedder/models/README.md
+!ai-embedder/app.py
+!ai-embedder/docker-compose.yml
+!ai-embedder/Dockerfile
+!ai-embedder/requirements.txt
 
-# Все application.properties во всех сервисах
-**/application.properties
-
-# Все application.yml/yaml (на будущее)
-**/application.yml
-**/application.yaml
-
-# VK токен
-vk_token.json
-
-# ZIP и временные файлы
-*.zip
-
-# === AI MODELS (НЕ ГРУЗИТЬ НА GITHUB) ===
-ai-service/ai-embedder/app/models/
-ai-service/ai-embedder/app/*.bin
-ai-service/ai-nli/models/
-ai-service/ai-nli/*.bin
-*.onnx
-*.pt
+# -------- ai-nli --------
+ai-nli/models/**
+!ai-nli/models/README.md
+!ai-nli/app.py
+!ai-nli/docker-compose.yml
+!ai-nli/Dockerfile
+!ai-nli/requirements.txt
