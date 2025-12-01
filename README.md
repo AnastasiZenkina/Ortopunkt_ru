@@ -21,17 +21,17 @@
 ## **Основные возможности**
 • **Telegram-бот:** показывает меню по ролям; для пациентов — общение с ботом, для персонала — свои функции и внутренняя навигация (изображения кликабельны)
 <p align="center">
-  <a href="screenshots/screens/doctor.png">
-    <img src="screenshots/screens/doctor.png" width="220">
+  <a href="screenshots/doctor.png">
+    <img src="screenshots/doctor.png" width="220">
   </a>
-  <a href="screenshots/screens/smm.png">
-    <img src="screenshots/screens/smm.png" width="220">
+  <a href="screenshots/smm.png">
+    <img src="screenshots/smm.png" width="220">
   </a>
-  <a href="screenshots/screens/target.png">
-    <img src="screenshots/screens/target.png" width="220">
+  <a href="screenshots/target.png">
+    <img src="screenshots/target.png" width="220">
   </a>
-  <a href="screenshots/screens/patient.png">
-    <img src="screenshots/screens/patient.png" width="220">
+  <a href="screenshots/patient.png">
+    <img src="screenshots/patient.png" width="220">
   </a>
 </p>
 
