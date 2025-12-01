@@ -21,19 +21,20 @@
 ## **Основные возможности**
 • **Telegram-бот:** показывает меню по ролям; для пациентов — общение с ботом, для персонала — свои функции и внутренняя навигация (изображения кликабельны)
 <p align="center">
-  <a href="screenshots/doctor.png">
-    <img src="screenshots/doctor.png" width="220">
+  <a href="screenshots/doctor.PNG">
+    <img src="screenshots/doctor.PNG" width="220">
   </a>
-  <a href="screenshots/smm.png">
-    <img src="screenshots/smm.png" width="220">
+  <a href="screenshots/smm.PNG">
+    <img src="screenshots/smm.PNG" width="220">
   </a>
-  <a href="screenshots/target.png">
-    <img src="screenshots/target.png" width="220">
+  <a href="screenshots/target.PNG">
+    <img src="screenshots/target.PNG" width="220">
   </a>
-  <a href="screenshots/patient.png">
-    <img src="screenshots/patient.png" width="220">
+  <a href="screenshots/patient.PNG">
+    <img src="screenshots/patient.PNG" width="220">
   </a>
 </p>
+
 
 • **CRM-база:** принимает обращения от бота; хранит пациентов и их заявки; позволяет менять статусы (ответ, запись к врачу, операция платно или по квоте)
 <p align="center">

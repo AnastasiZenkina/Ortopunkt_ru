@@ -22,19 +22,20 @@ It allows you to:
 • **Telegram bot:** displays role-based menus; for patients — communication with the bot, for staff — internal functions and navigation (images are clickable)
 
 <p align="center">
-  <a href="screenshots/screens/doctor.png">
-    <img src="screenshots/screens/doctor.png" width="220">
+  <a href="screenshots/doctor.PNG">
+    <img src="screenshots/doctor.PNG" width="220">
   </a>
-  <a href="screenshots/screens/smm.png">
-    <img src="screenshots/screens/smm.png" width="220">
+  <a href="screenshots/smm.PNG">
+    <img src="screenshots/smm.PNG" width="220">
   </a>
-  <a href="screenshots/screens/target.png">
-    <img src="screenshots/screens/target.png" width="220">
+  <a href="screenshots/target.PNG">
+    <img src="screenshots/target.PNG" width="220">
   </a>
-  <a href="screenshots/screens/patient.png">
-    <img src="screenshots/screens/patient.png" width="220">
+  <a href="screenshots/patient.PNG">
+    <img src="screenshots/patient.PNG" width="220">
   </a>
 </p>
+
 
 • **CRM database:** receives applications from the bot; stores patients and their requests; allows changing statuses (reply, appointment, paid surgery or quota)
 
