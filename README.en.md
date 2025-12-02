@@ -5,6 +5,7 @@
   <a href="#key-features">Features</a> •
   <a href="#technologies">Technologies</a> •
   <a href="#project-architecture">Architecture</a> •
+  <a href="#documentation">Documentation</a> •
   <a href="#ai-models">AI Models</a> •
   <a href="#security">Security</a> •
   <a href="#contacts">Contacts</a>
@@ -96,6 +97,7 @@ VK API · AI Models (NLI, Embeddings) · RestTemplate · Resilience4j · Swagger
 ## **Project Architecture**
 
 The project consists of 7 modules separated by responsibility:  
+
 • **tg-service** — user interface (Telegram UI: roles, menus, applications)  
 • **crm-service** — system core: database, patients, applications, statuses  
 • **ai-service** — AI logic: auto-replies and text analysis using NLI/Embeddings models  
@@ -103,6 +105,16 @@ The project consists of 7 modules separated by responsibility:
 • **common-dto** — shared DTOs for communication between services  
 • **common-config** — shared configuration (RestTemplate, Resilience4j: retry, rate limiter)  
 • **common-logging** — centralized logging
+
+## Documentation
+
+The project includes:
+- structured REST documentation (Swagger / OpenAPI)
+- a complete list of microservice endpoints
+- request and response schemas for all DTOs
+- error model and status codes
+
+Full API documentation is available locally when the project is running (CRM-service → `/swagger-ui`)
 
 ## **AI Models**
 • [**cross-encoder/nli-distilroberta-base**](ai-service/ai-nli/models/README.md) — NLI classifier: determines the intent of a message and helps choose the optimal response scenario  
