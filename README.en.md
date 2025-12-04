@@ -127,7 +127,4 @@ Full API documentation is available locally when the project is running (CRM-ser
 • External APIs are used only for marketing statistics (VK/Instagram) and do not transmit personal data
 
 ## **Contacts**
-
-- **LinkedIn:** [linkedin.com/in/anastasiazenkina](https://www.linkedin.com/in/anastasiazenkina/)
-- **Telegram:** [@asizenkina](https://t.me/asizenkina)
-- **Email:** asiazenkina@gmail.com
+[LinkedIn](https://linkedin.com/in/anastasiazenkina) · [Email](mailto:asiazenkina@gmail.com) · [Telegram](https://t.me/asizenkina)
