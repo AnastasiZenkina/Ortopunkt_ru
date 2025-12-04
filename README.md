@@ -124,7 +124,4 @@ VK API · AI Models (NLI, Embeddings) · RestTemplate · Resilience4j · Swagger
 • Внешние API используются только для маркетинговой статистики (VK/Instagram), без передачи персональных данных  
 
 ## **Контакты**
-
-- **LinkedIn:** [linkedin.com/in/anastasiazenkina](https://www.linkedin.com/in/anastasiazenkina/)
-- **Telegram:** [@asizenkina](https://t.me/asizenkina)
-- **Email:** asiazenkina@gmail.com
+[LinkedIn](https://linkedin.com/in/anastasiazenkina) · [Email](mailto:asiazenkina@gmail.com) · [Telegram](https://t.me/asizenkina)
