@@ -10,7 +10,7 @@
   <a href="#security">Security</a> •
   <a href="#contacts">Contacts</a>
 </p>
-
+![cover](216383A2-C04F-4404-8E4C-DE7EA0EAEA1E.png)
 ## **Project Description**
 A microservice CRM system built on Java 17 + Spring Boot and integrated directly into Telegram.
 
