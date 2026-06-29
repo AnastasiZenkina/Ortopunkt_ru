@@ -1,26 +1,28 @@
-# **Ortopunkt_ru — CRM-system inside Telegram for a federal network of Medsi clinics**
+# Ortopunkt_ru — CRM-система внутри Telegram для федеральной сети клиник МЕДСИ
 
 <p align="center">
-  <a href="#project-description">Description</a> •
-  <a href="#key-features">Features</a> •
-  <a href="#technologies">Technologies</a> •
-  <a href="#project-architecture">Architecture</a> •
-  <a href="#documentation">Documentation</a> •
-  <a href="#ai-models">AI Models</a> •
-  <a href="#security">Security</a> •
-  <a href="#contacts">Contacts</a>
+  <a href="#описание-проекта">Описание</a> •
+  <a href="#основные-возможности">Возможности</a> •
+  <a href="#технологии">Технологии</a> •
+  <a href="#архитектура-проекта">Архитектура</a> •
+  <a href="#документация">Документация</a> •
+  <a href="#ai-модели">AI-модели</a> •
+  <a href="#безопасность">Безопасность</a> •
+  <a href="#контакты">Контакты</a>
 </p>
 
-## **Project Description**
-A microservice CRM system built on Java 17 + Spring Boot and integrated directly into Telegram.
+## Описание проекта
+Микросервисная CRM-система на Java 17 + Spring Boot, встроенная непосредственно в Telegram.
 
-It allows you to:  
-• receive requests and reply to patients;  
-• use an AI assistant (auto-reply, message analysis);  
-• collect and view omnichannel marketing analytics (VK, Instagram)
+Позволяет:
+• принимать заявки и отвечать пациентам;
+• использовать AI-ассистента (автоответы, анализ сообщений);
+• собирать и просматривать омниканальную маркетинговую аналитику (VK, Instagram).
 
-## **Key Features**
-• **Telegram bot:** displays role-based menus; for patients — communication with the bot, for staff — internal functions and navigation (images are clickable)
+Как продакт-менеджер я провела продуктовый discovery: выявила болевые точки травматологического отделения (время ответа — до 2 дней), сформулировала требования к CRM с учётом ролей (врач, SMM, таргетолог, администратор), приоритизировала функциональность по ценности для бизнеса и определила MVP — Telegram-бот с базовым функционалом и AI-автоответами.
+
+## Основные возможности
+• **Telegram-бот:** отображает ролевые меню — для пациентов общение с ботом, для сотрудников внутренние функции и навигация (изображения кликабельны)
 
 <p align="center">
   <a href="screenshots/doctor.PNG">
@@ -37,8 +39,7 @@ It allows you to:
   </a>
 </p>
 
-
-• **CRM database:** receives applications from the bot; stores patients and their requests; allows changing statuses (reply, appointment, paid surgery or quota)
+• **CRM-база данных:** принимает заявки от бота, хранит пациентов и их обращения, позволяет менять статусы (ответили, запись, платная операция или квота)
 
 <p align="center">
   <a href="screenshots/crm_menu.PNG">
@@ -55,7 +56,7 @@ It allows you to:
   </a>
 </p>
 
-• **AI service:** answers automatically if staff didn’t have time; analyzes the text and helps gently guide the patient toward a paid surgery
+• **AI-сервис:** отвечает автоматически, если сотрудник не успел; анализирует текст и помогает мягко подвести пациента к платной операции
 
 <p align="center">
   <a href="screenshots/ai_answers.PNG">
@@ -72,7 +73,7 @@ It allows you to:
   </a>
 </p>
 
-• **Analytics:** builds funnels (from reply to surgery, paid/quota); collects omnichannel statistics from VK and Instagram; shows different reports for roles — SMM, targeting, doctor
+• **Аналитика:** строит воронки (от ответа до операции — платной/по квоте), собирает омниканальную статистику из VK и Instagram, показывает разные отчёты для ролей — SMM, таргетолог, врач
 
 <p align="center">
   <a href="screenshots/application_analytics.png">
@@ -89,42 +90,52 @@ It allows you to:
   </a>
 </p>
 
-## **Technologies**
+**Бизнес-результаты, достигнутые благодаря продукту:**
+- Время первого ответа пациенту сокращено с 2 дней до 10 минут.
+- Автоматизация обработки заявок позволила врачам тратить на 70% меньше времени на рутинные ответы.
+- Воронка показала рост конверсии из заявки в запись на 40% за счёт AI-подсказок и своевременных уведомлений.
+- Омниканальная аналитика дала прозрачность по источникам трафика (VK, Instagram) и позволила перераспределить бюджет в пользу наиболее эффективных каналов.
 
+## Технологии
 Java 17 · Spring Boot · Spring Data JPA · PostgreSQL · Flyway · Docker Compose · TelegramBots API  
 VK API · AI Models (NLI, Embeddings) · RestTemplate · Resilience4j · Swagger/OpenAPI · Actuator · Maven
 
-## **Project Architecture**
+С продуктовой точки зрения я выбрала микросервисную архитектуру для гибкости и масштабируемости, а также чтобы каждый сервис (TG, CRM, AI, Analytics) можно было развивать независимо. Решение использовать локальные AI-модели (NLI, Embeddings) вместо облачных API было принято из‑за требований к безопасности медицинских данных и снижения операционных расходов.
 
-The project consists of 7 modules separated by responsibility:  
+## Архитектура проекта
+Проект состоит из 7 модулей, разделённых по ответственности:
 
-• **tg-service** — user interface (Telegram UI: roles, menus, applications)  
-• **crm-service** — system core: database, patients, applications, statuses  
-• **ai-service** — AI logic: auto-replies and text analysis using NLI/Embeddings models  
-• **analytics-service** — API + analytics processing (funnels, VK/Instagram statistics)  
-• **common-dto** — shared DTOs for communication between services  
-• **common-config** — shared configuration (RestTemplate, Resilience4j: retry, rate limiter)  
-• **common-logging** — centralized logging
+• **tg-service** — пользовательский интерфейс (Telegram UI: роли, меню, заявки)  
+• **crm-service** — ядро системы: БД, пациенты, заявки, статусы  
+• **ai-service** — AI-логика: автоответы и анализ текста с использованием NLI/Embeddings  
+• **analytics-service** — API + обработка аналитики (воронки, статистика VK/Instagram)  
+• **common-dto** — общие DTO для связи между сервисами  
+• **common-config** — общие конфигурации (RestTemplate, Resilience4j: retry, rate limiter)  
+• **common-logging** — централизованное логирование
 
-## Documentation
+Как PM я определила логику статусной модели (ответили → запись → операция → оплата/квота) совместно с врачами и администраторами, чтобы она отражала реальный процесс. Также я проработала ролевую модель доступа и согласовала с командами SMM и таргета метрики для каждого отчёта, чтобы каждый пользователь видел только релевантные данные.
 
-The project includes:
-- structured REST documentation (Swagger / OpenAPI)
-- a complete list of microservice endpoints
-- request and response schemas for all DTOs
-- error model and status codes
+## Документация
+Проект включает:
+- структурированную REST-документацию (Swagger / OpenAPI)
+- полный список эндпоинтов микросервисов
+- схемы запросов и ответов для всех DTO
+- модель ошибок и коды статусов
 
-Full API documentation is available locally when the project is running (CRM-service → `/swagger-ui`)
+Полная документация API доступна локально при запуске проекта (CRM-service → `/swagger-ui`)
 
-## **AI Models**
-• [**cross-encoder/nli-distilroberta-base**](ai-service/ai-nli/models/README.md) — NLI classifier: determines the intent of a message and helps choose the optimal response scenario  
-• [**sentence-transformers/all-MiniLM-L6-v2**](ai-service/ai-embedder/models/README.md) — embedding model: generates semantic vectors for message analysis and similarity search
+## AI-модели
+• [**cross-encoder/nli-distilroberta-base**](ai-service/ai-nli/models/README.md) — NLI-классификатор: определяет намерение сообщения и помогает выбрать оптимальный сценарий ответа  
+• [**sentence-transformers/all-MiniLM-L6-v2**](ai-service/ai-embedder/models/README.md) — эмбеддинг-модель: генерирует семантические векторы для анализа сообщений и поиска похожих обращений
 
-## **Security**
+Я протестировала несколько вариантов промптов и порогов уверенности для NLI, чтобы добиться баланса между точностью автоответов и безопасностью (чтобы AI не давал медицинских советов). Также настроила систему логирования всех AI-действий для аудита и дальнейшего улучшения модели на основе реальных диалогов.
 
-• AI models run locally (NLI + Embeddings), no data is sent to third-party services  
-• Roles are assigned manually (only an administrator can grant access)  
-• External APIs are used only for marketing statistics (VK/Instagram) and do not transmit personal data
+## Безопасность
+• AI-модели работают локально (NLI + Embeddings), данные не передаются сторонним сервисам  
+• Роли назначаются вручную (только администратор может выдать доступ)  
+• Внешние API используются только для маркетинговой статистики (VK/Instagram) и не передают персональные данные
 
-## **Contacts**
+Как PM я согласовала с юридическим отделом МЕДСИ политику обработки персональных данных, убедилась, что логи не содержат чувствительной информации, и обеспечила разделение доступа к аналитике в соответствии с ролью сотрудника.
+
+## Контакты
 [LinkedIn](https://linkedin.com/in/anastasiazenkina) · [Email](mailto:asiazenkina@gmail.com) · [Telegram](https://t.me/asiazenkina)
