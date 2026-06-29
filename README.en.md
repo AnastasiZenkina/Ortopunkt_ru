@@ -1,4 +1,4 @@
-# Ortopunkt_ru — CRM-system inside Telegram for a federal network of Medsi clinics
+# Ortopunkt_ru - CRM system inside Telegram for a federal network of Medsi clinics
 
 <p align="center">
   <a href="#project-description">Description</a> •
